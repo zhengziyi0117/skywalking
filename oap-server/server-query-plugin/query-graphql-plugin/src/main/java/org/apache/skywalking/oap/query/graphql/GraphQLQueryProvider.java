@@ -22,9 +22,13 @@ import com.linecorp.armeria.common.HttpMethod;
 import graphql.kickstart.tools.SchemaParser;
 import graphql.kickstart.tools.SchemaParserBuilder;
 import graphql.scalars.ExtendedScalars;
+
+import java.util.Arrays;
 import java.util.Collections;
 import org.apache.skywalking.oap.query.graphql.resolver.AggregationQuery;
 import org.apache.skywalking.oap.query.graphql.resolver.AlarmQuery;
+import org.apache.skywalking.oap.query.graphql.resolver.AsyncProfilerMutation;
+import org.apache.skywalking.oap.query.graphql.resolver.AsyncProfilerQuery;
 import org.apache.skywalking.oap.query.graphql.resolver.BrowserLogQuery;
 import org.apache.skywalking.oap.query.graphql.resolver.ContinuousProfilingMutation;
 import org.apache.skywalking.oap.query.graphql.resolver.ContinuousProfilingQuery;
@@ -102,7 +106,7 @@ public class GraphQLQueryProvider extends ModuleProvider {
                      /*
                       * Since 9.5.0.
                       * Metrics v3 query protocol is an enhanced metrics query(s) from original v1 and v2
-                      * powered by newly added Metrics Query Expression Language to fetch and 
+                      * powered by newly added Metrics Query Expression Language to fetch and
                       * manipulate metrics data in the query stage.
                       */
                      .file("query-protocol/metrics-v3.graphqls")
@@ -145,7 +149,9 @@ public class GraphQLQueryProvider extends ModuleProvider {
                      .resolvers(new ContinuousProfilingQuery(getManager()), new ContinuousProfilingMutation(getManager()))
                      .file("query-protocol/record.graphqls")
                      .resolvers(new RecordsQuery(getManager()))
-            .file("query-protocol/hierarchy.graphqls").resolvers(new HierarchyQuery(getManager()));
+                     .file("query-protocol/hierarchy.graphqls").resolvers(new HierarchyQuery(getManager()))
+                     .file("query-protocol/async-profiler.graphqls")
+                .resolvers(new AsyncProfilerQuery(getManager()),new AsyncProfilerMutation(getManager()));
 
         if (config.isEnableOnDemandPodLog()) {
             schemaBuilder

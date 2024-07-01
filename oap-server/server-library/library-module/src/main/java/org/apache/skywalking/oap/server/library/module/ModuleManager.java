@@ -61,6 +61,8 @@ public class ModuleManager implements ModuleDefineHolder {
                 );
                 loadedModules.put(module.name(), module);
                 moduleSet.remove(module.name());
+            } else {
+                loadedModules.put(module.name(), null);
             }
         }
         // Finish prepare stage

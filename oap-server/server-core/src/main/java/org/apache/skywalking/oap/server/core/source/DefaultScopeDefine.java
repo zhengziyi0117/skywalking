@@ -137,6 +137,9 @@ public class DefaultScopeDefine {
     public static final int K8S_ENDPOINT = 76;
     public static final int K8S_ENDPOINT_REALATION = 77;
 
+    public static final int JFR_PROFILING_DATA = 78;
+    public static final int ASYNC_PROFILER_TASK = 79;
+
     /**
      * Catalog of scope, the metrics processor could use this to group all generated metrics by oal rt.
      */

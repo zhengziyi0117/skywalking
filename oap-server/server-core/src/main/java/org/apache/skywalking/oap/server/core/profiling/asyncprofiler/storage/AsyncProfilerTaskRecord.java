@@ -39,7 +39,7 @@ import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.AS
 @BanyanDB.TimestampColumn(AsyncProfilerTaskRecord.CREATE_TIME)
 public class AsyncProfilerTaskRecord extends NoneStream {
 
-    public static final String INDEX_NAME = "async_profile_task";
+    public static final String INDEX_NAME = "async_profiler_task";
     public static final String TASK_ID = "task_id";
     public static final String SERVICE_ID = "service_id";
     public static final String SERVICE_INSTANCE_ID = "service_instance_id";

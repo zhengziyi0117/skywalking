@@ -1,5 +1,6 @@
 package org.apache.skywalking.oap.server.core.profiling.asyncprofiler;
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.apache.skywalking.oap.server.core.Const;
 import org.apache.skywalking.oap.server.core.analysis.TimeBucket;
@@ -23,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public class AsyncProfilerMutationService implements Service {
+    private static final Gson GSON = new Gson();
+
     private final ModuleManager moduleManager;
 
     private IAsyncProfilerTaskQueryDAO taskQueryDAO;
@@ -55,8 +58,10 @@ public class AsyncProfilerMutationService implements Service {
         AsyncProfilerTaskRecord task = new AsyncProfilerTaskRecord();
         task.setTaskId(createTime + Const.ID_CONNECTOR + serviceInstanceId);
         task.setServiceId(serviceId);
-        task.setServiceInstanceId(serviceId);
+        task.setServiceInstanceId(serviceInstanceId);
         task.setDuration(duration);
+        task.setEvents(GSON.toJson(events));
+        task.setDataFormat(dataFormat.toString());
         task.setCreateTime(createTime);
         task.setExecArgs(execArgs);
         task.setTimeBucket(TimeBucket.getMinuteTimeBucket(createTime));

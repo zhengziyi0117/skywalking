@@ -22,9 +22,12 @@ public class AsyncProfilerTaskCommand extends BaseCommand implements Serializabl
         this.createTime = createTime;
         String comma = ",";
         StringBuilder sb = new StringBuilder();
-        sb.append(String.join(comma, events)).append(comma);
+        sb.append("start,");
+        sb.append("event=").append(String.join(comma, events)).append(comma);
         sb.append(dataFormat).append(comma);
-        sb.append(execArgs);
+        if(execArgs != null && !execArgs.isEmpty()) {
+            sb.append(execArgs);
+        }
         this.execArgs = sb.toString();
     }
 
@@ -53,7 +56,7 @@ public class AsyncProfilerTaskCommand extends BaseCommand implements Serializabl
                 duration = Integer.parseInt(pair.getValue());
             } else if ("ExecArgs".equals(pair.getKey())) {
                 execArgs = pair.getValue();
-            } else if ("ExecArgs".equals(pair.getKey())) {
+            } else if ("CreateTime".equals(pair.getKey())) {
                 createTime = Long.parseLong(pair.getValue());
             }
         }
@@ -65,7 +68,8 @@ public class AsyncProfilerTaskCommand extends BaseCommand implements Serializabl
         final Command.Builder builder = commandBuilder();
         builder.addArgs(KeyStringValuePair.newBuilder().setKey("TaskId").setValue(taskId))
                 .addArgs(KeyStringValuePair.newBuilder().setKey("Duration").setValue(String.valueOf(duration)))
-                .addArgs(KeyStringValuePair.newBuilder().setKey("ExecArgs").setValue(execArgs));
+                .addArgs(KeyStringValuePair.newBuilder().setKey("ExecArgs").setValue(execArgs))
+                .addArgs(KeyStringValuePair.newBuilder().setKey("CreateTime").setValue(String.valueOf(createTime)));
         return builder;
     }
 

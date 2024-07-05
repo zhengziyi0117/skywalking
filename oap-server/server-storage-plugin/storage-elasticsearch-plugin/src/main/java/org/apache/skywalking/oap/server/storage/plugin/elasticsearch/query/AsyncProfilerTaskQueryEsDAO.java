@@ -40,25 +40,25 @@ public class AsyncProfilerTaskQueryEsDAO extends EsDAO implements IAsyncProfiler
     public List<AsyncProfilerTask> getTaskList(String serviceInstanceId, Long startTimeBucket, Long endTimeBucket, Integer limit) {
         String index = IndexController.LogicIndicesRegister.getPhysicalTableName(AsyncProfilerTaskRecord.INDEX_NAME);
         BoolQueryBuilder query = Query.bool();
-        if (IndexController.LogicIndicesRegister.isMergedTable(ProfileTaskRecord.INDEX_NAME)) {
-            query.must(Query.term(IndexController.LogicIndicesRegister.RECORD_TABLE_NAME, ProfileTaskRecord.INDEX_NAME));
+        if (IndexController.LogicIndicesRegister.isMergedTable(AsyncProfilerTaskRecord.INDEX_NAME)) {
+            query.must(Query.term(IndexController.LogicIndicesRegister.RECORD_TABLE_NAME, AsyncProfilerTaskRecord.INDEX_NAME));
         }
 
         if (StringUtil.isNotEmpty(serviceInstanceId)) {
-            query.must(Query.term(ProfileTaskRecord.SERVICE_ID, serviceInstanceId));
+            query.must(Query.term(AsyncProfilerTaskRecord.SERVICE_INSTANCE_ID, serviceInstanceId));
         }
 
         if (startTimeBucket != null) {
-            query.must(Query.range(ProfileTaskRecord.TIME_BUCKET).gte(startTimeBucket));
+            query.must(Query.range(AsyncProfilerTaskRecord.TIME_BUCKET).gte(startTimeBucket));
         }
 
         if (endTimeBucket != null) {
-            query.must(Query.range(ProfileTaskRecord.TIME_BUCKET).lte(endTimeBucket));
+            query.must(Query.range(AsyncProfilerTaskRecord.TIME_BUCKET).lte(endTimeBucket));
         }
         SearchBuilder search = Search.builder().query(query);
         search.size(Objects.requireNonNullElse(limit, queryMaxSize));
 
-        search.sort(ProfileTaskRecord.START_TIME, Sort.Order.DESC);
+        search.sort(AsyncProfilerTaskRecord.CREATE_TIME, Sort.Order.DESC);
 
         final SearchResponse response = getClient().search(index, search.build());
 
@@ -98,6 +98,7 @@ public class AsyncProfilerTaskQueryEsDAO extends EsDAO implements IAsyncProfiler
         String dataFormat = (String) source.get(AsyncProfilerTaskRecord.DATA_FORMAT);
         return AsyncProfilerTask.builder()
                 .id((String) source.get(AsyncProfilerTaskRecord.TASK_ID))
+                .serviceId((String) source.get(AsyncProfilerTaskRecord.SERVICE_ID))
                 .serviceInstanceId((String) source.get(AsyncProfilerTaskRecord.SERVICE_INSTANCE_ID))
                 .createTime(((Number) source.get(AsyncProfilerTaskRecord.CREATE_TIME)).longValue())
                 .duration(((Number) source.get(AsyncProfilerTaskRecord.DURATION)).intValue())

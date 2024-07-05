@@ -59,7 +59,7 @@ public class AsyncProfilerServiceHandler extends AsyncProfilerTaskGrpc.AsyncProf
                 if (asyncProfilerData.hasMetaData()) {
                     taskMetaData = asyncProfilerData.getMetaData();
 //                    Path tempFile = Files.createTempFile(taskMetaData.getTaskId(), "");
-                    Path tempFile = Files.createFile(Path.of("/User/bytedance/", taskMetaData.getTaskId()));
+                    Path tempFile = Files.createFile(Path.of("/Users/bytedance/IdeaProjects/skywalking/", taskMetaData.getTaskId()));
                     outputStream = Files.newOutputStream(tempFile);
                 } else if (asyncProfilerData.hasContent()) {
                     outputStream.write(asyncProfilerData.getContent().toByteArray());

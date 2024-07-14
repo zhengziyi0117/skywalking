@@ -2,6 +2,7 @@ package org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerDataFormatType;
 import org.apache.skywalking.library.elasticsearch.requests.search.BoolQueryBuilder;
 import org.apache.skywalking.library.elasticsearch.requests.search.Query;
 import org.apache.skywalking.library.elasticsearch.requests.search.Search;
@@ -11,7 +12,6 @@ import org.apache.skywalking.library.elasticsearch.response.search.SearchHit;
 import org.apache.skywalking.library.elasticsearch.response.search.SearchResponse;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskRecord;
 import org.apache.skywalking.oap.server.core.profiling.trace.ProfileTaskRecord;
-import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerDataFormatType;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerEventType;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTask;
 import org.apache.skywalking.oap.server.core.storage.profiling.asyncprofiler.IAsyncProfilerTaskQueryDAO;
@@ -96,6 +96,7 @@ public class AsyncProfilerTaskQueryEsDAO extends EsDAO implements IAsyncProfiler
                 new TypeToken<List<String>>() {
                 }.getType());
         String dataFormat = (String) source.get(AsyncProfilerTaskRecord.DATA_FORMAT);
+
         return AsyncProfilerTask.builder()
                 .id((String) source.get(AsyncProfilerTaskRecord.TASK_ID))
                 .serviceId((String) source.get(AsyncProfilerTaskRecord.SERVICE_ID))

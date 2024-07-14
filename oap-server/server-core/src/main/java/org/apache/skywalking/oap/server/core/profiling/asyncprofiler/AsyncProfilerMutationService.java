@@ -2,11 +2,11 @@ package org.apache.skywalking.oap.server.core.profiling.asyncprofiler;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerDataFormatType;
 import org.apache.skywalking.oap.server.core.Const;
 import org.apache.skywalking.oap.server.core.analysis.TimeBucket;
 import org.apache.skywalking.oap.server.core.analysis.worker.NoneStreamProcessor;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskRecord;
-import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerDataFormatType;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerEventType;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTask;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTaskCreationResult;

@@ -12,7 +12,9 @@ public enum AsyncProfilerEventType {
     CPU(0, "cpu"),
     WALL(1, "wall"),
     LOCK(2, "lock"),
-    ALLOC(3, "alloc");
+    ALLOC(3, "alloc"),
+    CTIMER(4,"ctimer"),
+    ITIMER(4,"itimer");
 
     private final int code;
     private final String name;

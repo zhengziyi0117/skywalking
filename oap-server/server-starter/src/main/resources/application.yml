@@ -141,17 +141,17 @@ core:
     # Notice: some of the configurations only available for kubernetes environments.
     enableHierarchy: ${SW_CORE_ENABLE_HIERARCHY:true}
 storage:
-  selector: ${SW_STORAGE:elasticsearch}
+  selector: ${SW_STORAGE:h2}
   elasticsearch:
     namespace: ${SW_NAMESPACE:""}
-    clusterNodes: ${SW_STORAGE_ES_CLUSTER_NODES:"10.37.84.162:9200"}
+    clusterNodes: ${SW_STORAGE_ES_CLUSTER_NODES:localhost:9200}
     protocol: ${SW_STORAGE_ES_HTTP_PROTOCOL:"http"}
     connectTimeout: ${SW_STORAGE_ES_CONNECT_TIMEOUT:3000}
     socketTimeout: ${SW_STORAGE_ES_SOCKET_TIMEOUT:30000}
     responseTimeout: ${SW_STORAGE_ES_RESPONSE_TIMEOUT:15000}
     numHttpClientThread: ${SW_STORAGE_ES_NUM_HTTP_CLIENT_THREAD:0}
-    user: ${SW_ES_USER:"elastic"}
-    password: ${SW_ES_PASSWORD:"zzy0117."}
+    user: ${SW_ES_USER:""}
+    password: ${SW_ES_PASSWORD:""}
     trustStorePath: ${SW_STORAGE_ES_SSL_JKS_PATH:""}
     trustStorePass: ${SW_STORAGE_ES_SSL_JKS_PASS:""}
     secretsManagementFile: ${SW_ES_SECRETS_MANAGEMENT_FILE:""} # Secrets management file in the properties format includes the username, password, which are managed by 3rd party tool.

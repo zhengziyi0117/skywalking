@@ -30,6 +30,8 @@ import org.apache.skywalking.oap.server.core.storage.type.Convert2Entity;
 import org.apache.skywalking.oap.server.core.storage.type.Convert2Storage;
 import org.apache.skywalking.oap.server.core.storage.type.StorageBuilder;
 
+import java.util.List;
+
 import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.ASYNC_PROFILER_TASK;
 
 @Getter
@@ -63,7 +65,7 @@ public class AsyncProfilerTaskRecord extends NoneStream {
     @Column(name = DATA_FORMAT)
     private String dataFormat;
     @Column(name = EVENT_TYPES)
-    private String events;
+    private List<String> events;
     @Column(name = EXEC_ARGS, storageOnly = true)
     private String execArgs;
 
@@ -81,7 +83,7 @@ public class AsyncProfilerTaskRecord extends NoneStream {
             record.setTaskId((String) converter.get(TASK_ID));
             record.setCreateTime(((Number) converter.get(CREATE_TIME)).longValue());
             record.setDuration(((Number) converter.get(DURATION)).intValue());
-            record.setEvents((String) converter.get(EVENT_TYPES));
+            record.setEvents((List<String>) converter.get(EVENT_TYPES));
             record.setDataFormat((String) converter.get(DATA_FORMAT));
             record.setExecArgs((String) converter.get(EXEC_ARGS));
             record.setTimeBucket(((Number) converter.get(TIME_BUCKET)).longValue());

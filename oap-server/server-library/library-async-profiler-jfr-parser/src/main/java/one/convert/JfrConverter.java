@@ -101,24 +101,32 @@ public abstract class JfrConverter extends Classifier {
         long startTicks = args.from != 0 ? toTicks(args.from) : Long.MIN_VALUE;
         long endTicks = args.to != 0 ? toTicks(args.to) : Long.MAX_VALUE;
         for (EventPair eventPair; (eventPair = jfr.readEventWithType()) != null; ) {
-            JfrEventType type = eventPair.type();
-            Event event = eventPair.event();
+            JfrEventType type = eventPair.getType();
+            Event event = eventPair.getEvent();
             if (event.time >= startTicks && event.time <= endTicks) {
-                EventAggregator agg = switch (type) {
-                    case EXECUTION_SAMPLE ->
-                            event2aggMap.computeIfAbsent(EXECUTION_SAMPLE, JfrConverter::getExecutionSampleAggregator);
-                    case OBJECT_ALLOCATION_IN_NEW_TLAB ->
-                            event2aggMap.computeIfAbsent(OBJECT_ALLOCATION_IN_NEW_TLAB, JfrConverter::getExecutionSampleAggregator);
-                    case OBJECT_ALLOCATION_OUTSIDE_TLAB ->
-                            event2aggMap.computeIfAbsent(OBJECT_ALLOCATION_OUTSIDE_TLAB, JfrConverter::getExecutionSampleAggregator);
-                    case THREAD_PARK ->
-                            event2aggMap.computeIfAbsent(THREAD_PARK, JfrConverter::getExecutionSampleAggregator);
-                    case JAVA_MONITOR_ENTER ->
-                            event2aggMap.computeIfAbsent(JAVA_MONITOR_ENTER, JfrConverter::getExecutionSampleAggregator);
-                    case PROFILER_LIVE_OBJECT ->
-                            event2aggMap.computeIfAbsent(PROFILER_LIVE_OBJECT, JfrConverter::getExecutionSampleAggregator);
-                    default -> throw new RuntimeException("Unknown event type: " + type);
-                };
+                EventAggregator agg;
+                switch (type) {
+                    case EXECUTION_SAMPLE:
+                        agg = event2aggMap.computeIfAbsent(EXECUTION_SAMPLE, JfrConverter::getExecutionSampleAggregator);
+                        break;
+                    case OBJECT_ALLOCATION_IN_NEW_TLAB:
+                        agg = event2aggMap.computeIfAbsent(OBJECT_ALLOCATION_IN_NEW_TLAB, JfrConverter::getExecutionSampleAggregator);
+                        break;
+                    case OBJECT_ALLOCATION_OUTSIDE_TLAB:
+                        agg = event2aggMap.computeIfAbsent(OBJECT_ALLOCATION_OUTSIDE_TLAB, JfrConverter::getExecutionSampleAggregator);
+                        break;
+                    case THREAD_PARK:
+                        agg = event2aggMap.computeIfAbsent(THREAD_PARK, JfrConverter::getExecutionSampleAggregator);
+                        break;
+                    case JAVA_MONITOR_ENTER:
+                        agg = event2aggMap.computeIfAbsent(JAVA_MONITOR_ENTER, JfrConverter::getExecutionSampleAggregator);
+                        break;
+                    case PROFILER_LIVE_OBJECT:
+                        agg = event2aggMap.computeIfAbsent(PROFILER_LIVE_OBJECT, JfrConverter::getExecutionSampleAggregator);
+                        break;
+                    default:
+                        throw new RuntimeException("Unknown event type: " + type);
+                }
                 if (!(event instanceof ExecutionSample) || (threadStates & (1L << ((ExecutionSample) event).threadState)) != 0) {
                     agg.collect(event);
                 }
@@ -131,14 +139,21 @@ public abstract class JfrConverter extends Classifier {
 
     private static EventAggregator getExecutionSampleAggregator(JfrEventType jfrEventType) {
         // TODO aggregator default configure
-        return switch (jfrEventType) {
-            case EXECUTION_SAMPLE -> new EventAggregator(false, false);
-            case OBJECT_ALLOCATION_OUTSIDE_TLAB, OBJECT_ALLOCATION_IN_NEW_TLAB -> new EventAggregator(false, true);
-            case THREAD_PARK -> new EventAggregator(true, true);
-            case JAVA_MONITOR_ENTER -> new EventAggregator(true, false);
-            case PROFILER_LIVE_OBJECT -> new EventAggregator(true, false);
-            default -> new EventAggregator(false, false);
-        };
+        switch (jfrEventType) {
+            case EXECUTION_SAMPLE:
+                return new EventAggregator(false, false);
+            case OBJECT_ALLOCATION_IN_NEW_TLAB:
+            case OBJECT_ALLOCATION_OUTSIDE_TLAB:
+                return new EventAggregator(false, true);
+            case THREAD_PARK:
+                return new EventAggregator(true, true);
+            case JAVA_MONITOR_ENTER:
+                return new EventAggregator(true, false);
+            case PROFILER_LIVE_OBJECT:
+                return new EventAggregator(true, false);
+            default:
+                return new EventAggregator(false, false);
+        }
     }
 
     protected int toThreadState(String name) {

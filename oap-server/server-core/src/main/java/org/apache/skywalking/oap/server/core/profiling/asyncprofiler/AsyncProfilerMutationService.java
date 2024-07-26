@@ -1,6 +1,23 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.apache.skywalking.oap.server.core.profiling.asyncprofiler;
 
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerDataFormatType;
 import org.apache.skywalking.oap.server.core.Const;
@@ -21,11 +38,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class AsyncProfilerMutationService implements Service {
-    private static final Gson GSON = new Gson();
-
     private final ModuleManager moduleManager;
 
     private IAsyncProfilerTaskQueryDAO taskQueryDAO;
@@ -60,7 +76,8 @@ public class AsyncProfilerMutationService implements Service {
         task.setServiceId(serviceId);
         task.setServiceInstanceId(serviceInstanceId);
         task.setDuration(duration);
-        task.setEvents(GSON.toJson(events));
+        List<String> rowEvents = events.stream().map(AsyncProfilerEventType::toString).collect(Collectors.toList());
+        task.setEvents(rowEvents);
         task.setDataFormat(dataFormat.toString());
         task.setCreateTime(createTime);
         task.setExecArgs(execArgs);
@@ -91,6 +108,9 @@ public class AsyncProfilerMutationService implements Service {
         }
         if (CollectionUtils.isEmpty(events)) {
             return "profile events cannot be empty";
+        }
+        if (AsyncProfilerDataFormatType.HTML.equals(dataFormat) && events.size() != 1) {
+            return "if data format is HTML, profile events must contain only one event";
         }
 
         // Each service can monitor up to 1 endpoints during the execution of tasks

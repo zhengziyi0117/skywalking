@@ -1,6 +1,23 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerDataFormatType;
 import org.apache.skywalking.library.elasticsearch.requests.search.BoolQueryBuilder;
@@ -92,9 +109,8 @@ public class AsyncProfilerTaskQueryEsDAO extends EsDAO implements IAsyncProfiler
 
     private AsyncProfilerTask parseTask(SearchHit data) {
         Map<String, Object> source = data.getSource();
-        List<String> events = GSON.fromJson((String) source.get(AsyncProfilerTaskRecord.EVENT_TYPES),
-                new TypeToken<List<String>>() {
-                }.getType());
+        // This must be a list
+        List<String> events = (List<String>) source.get(AsyncProfilerTaskRecord.EVENT_TYPES);
         String dataFormat = (String) source.get(AsyncProfilerTaskRecord.DATA_FORMAT);
 
         return AsyncProfilerTask.builder()

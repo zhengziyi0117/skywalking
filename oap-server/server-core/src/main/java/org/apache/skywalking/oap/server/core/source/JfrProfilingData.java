@@ -1,18 +1,15 @@
 package org.apache.skywalking.oap.server.core.source;
 
 import lombok.Data;
-import org.apache.skywalking.oap.server.core.Const;
-import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.JFREventType;
-
-import java.util.List;
+import one.jfr.event.JfrEventType;
 
 import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.JFR_PROFILING_DATA;
 
 
 @Data
-@ScopeDeclaration(id = JFR_PROFILING_DATA, name = "JFRProfilingData")
+@ScopeDeclaration(id = JFR_PROFILING_DATA, name = "JfrProfilingData")
 @ScopeDefaultColumn.VirtualColumnDefinition(fieldName = "entityId", columnName = "entity_id", isID = true, type = String.class)
-public class JFRProfilingData extends Source {
+public class JfrProfilingData extends Source {
     private volatile String entityId;
 
     @Override
@@ -23,18 +20,13 @@ public class JFRProfilingData extends Source {
     @Override
     public String getEntityId() {
         if (entityId == null) {
-            return taskId;
+            return taskId + uploadTime;
         }
         return entityId;
     }
 
     private String taskId;
-    private long startTime;
-    private long interval;
-    private JFREventType eventType;
-    private List<String> stackFrames;
-
-    private long duration;
-
-    private long tlabSize;
+    private long uploadTime;
+    private JfrEventType eventType;
+    private byte[] dataBinary;
 }

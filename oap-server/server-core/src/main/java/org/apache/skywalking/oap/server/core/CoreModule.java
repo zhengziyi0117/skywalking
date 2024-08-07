@@ -34,6 +34,7 @@ import org.apache.skywalking.oap.server.core.management.ui.menu.UIMenuManagement
 import org.apache.skywalking.oap.server.core.management.ui.template.UITemplateManagementService;
 import org.apache.skywalking.oap.server.core.oal.rt.OALEngineLoaderService;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.AsyncProfilerMutationService;
+import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.AsyncProfilerQueryService;
 import org.apache.skywalking.oap.server.core.profiling.continuous.ContinuousProfilingMutationService;
 import org.apache.skywalking.oap.server.core.profiling.continuous.ContinuousProfilingQueryService;
 import org.apache.skywalking.oap.server.core.profiling.ebpf.EBPFProfilingMutationService;
@@ -128,6 +129,7 @@ public class CoreModule extends ModuleDefine {
 
     private void addAsyncProfilerService(List<Class> classes){
         classes.add(AsyncProfilerMutationService.class);
+        classes.add(AsyncProfilerQueryService.class);
     }
 
     private void addOALService(List<Class> classes) {

@@ -14,24 +14,24 @@ import java.io.IOException;
 public class AsyncProfilerMutation implements GraphQLMutationResolver {
     private final ModuleManager moduleManager;
 
-    private AsyncProfilerMutationService queryService;
+    private AsyncProfilerMutationService mutationService;
 
     public AsyncProfilerMutation(ModuleManager moduleManager) {
         this.moduleManager = moduleManager;
     }
 
-    private AsyncProfilerMutationService getAsyncProfilerQueryService() {
-        if (queryService == null) {
-            this.queryService = moduleManager.find(CoreModule.NAME)
+    private AsyncProfilerMutationService getAsyncProfilerMutationService() {
+        if (mutationService == null) {
+            this.mutationService = moduleManager.find(CoreModule.NAME)
                     .provider()
                     .getService(AsyncProfilerMutationService.class);
         }
-        return queryService;
+        return mutationService;
     }
 
     public AsyncProfilerTaskCreationResult createAsyncProfilerTask(AsyncProfilerTaskCreationRequest request) throws IOException {
-        AsyncProfilerMutationService asyncProfilerQueryService = getAsyncProfilerQueryService();
-        return asyncProfilerQueryService.createTask(request.getServiceId(), request.getServiceInstanceId(),
+        AsyncProfilerMutationService asyncProfilerMutationService = getAsyncProfilerMutationService();
+        return asyncProfilerMutationService.createTask(request.getServiceId(), request.getServiceInstanceId(),
                 request.getDuration(), request.getDataFormat(), request.getEvents(), request.getExecArgs());
     }
 }

@@ -18,18 +18,21 @@
 
 package org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage;
 
+import com.google.gson.Gson;
 import org.apache.skywalking.oap.server.core.analysis.SourceDispatcher;
 import org.apache.skywalking.oap.server.core.analysis.TimeBucket;
 import org.apache.skywalking.oap.server.core.analysis.worker.RecordStreamProcessor;
 import org.apache.skywalking.oap.server.core.source.JfrProfilingData;
 
 public class JfrProfilingDataDispatcher implements SourceDispatcher<JfrProfilingData> {
+    private static final Gson GSON = new Gson();
+
     @Override
     public void dispatch(JfrProfilingData source) {
         JfrProfilingDataRecord record = new JfrProfilingDataRecord();
         record.setTaskId(source.getTaskId());
         record.setEventType(source.getEventType().toString());
-        record.setDataBinary(source.getDataBinary());
+        record.setDataBinary(GSON.toJson(source.getFrameTree()).getBytes());
         record.setUploadTime(source.getUploadTime());
         record.setTimeBucket(TimeBucket.getRecordTimeBucket(source.getUploadTime()));
         RecordStreamProcessor.getInstance().in(record);

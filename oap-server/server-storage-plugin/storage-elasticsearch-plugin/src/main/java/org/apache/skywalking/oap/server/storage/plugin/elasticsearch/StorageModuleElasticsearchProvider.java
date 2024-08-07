@@ -37,6 +37,7 @@ import org.apache.skywalking.oap.server.core.storage.management.UIMenuManagement
 import org.apache.skywalking.oap.server.core.storage.management.UITemplateManagementDAO;
 import org.apache.skywalking.oap.server.core.storage.model.ModelCreator;
 import org.apache.skywalking.oap.server.core.storage.profiling.asyncprofiler.IAsyncProfilerTaskQueryDAO;
+import org.apache.skywalking.oap.server.core.storage.profiling.asyncprofiler.IJfrDataQueryDAO;
 import org.apache.skywalking.oap.server.core.storage.profiling.continuous.IContinuousProfilingPolicyDAO;
 import org.apache.skywalking.oap.server.core.storage.profiling.ebpf.IEBPFProfilingDataDAO;
 import org.apache.skywalking.oap.server.core.storage.profiling.ebpf.IEBPFProfilingScheduleDAO;
@@ -83,6 +84,7 @@ import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query.EBPFP
 import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query.EBPFProfilingTaskEsDAO;
 import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query.ESEventQueryDAO;
 import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query.HierarchyQueryEsDAO;
+import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query.JfrDataQueryEsDAO;
 import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query.LogQueryEsDAO;
 import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query.MetadataQueryEsDAO;
 import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query.MetricsQueryEsDAO;
@@ -258,8 +260,13 @@ public class StorageModuleElasticsearchProvider extends ModuleProvider {
             ISpanAttachedEventQueryDAO.class, new SpanAttachedEventEsDAO(elasticSearchClient, config));
         // TODO config
         this.registerServiceImplementation(
-                IAsyncProfilerTaskQueryDAO.class, new AsyncProfilerTaskQueryEsDAO(elasticSearchClient, config
-                        .getProfileTaskQueryMaxSize()));
+                IAsyncProfilerTaskQueryDAO.class,
+                new AsyncProfilerTaskQueryEsDAO(elasticSearchClient, config.getProfileTaskQueryMaxSize())
+        );
+        this.registerServiceImplementation(
+                IJfrDataQueryDAO.class,
+                new JfrDataQueryEsDAO(elasticSearchClient)
+        );
         IndexController.INSTANCE.setLogicSharding(config.isLogicSharding());
         IndexController.INSTANCE.setEnableCustomRouting(config.isEnableCustomRouting());
         this.registerServiceImplementation(IHierarchyQueryDAO.class, new HierarchyQueryEsDAO(elasticSearchClient, config));

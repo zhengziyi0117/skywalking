@@ -39,7 +39,7 @@ import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.JF
         builder = JfrProfilingDataRecord.Builder.class, processor = RecordStreamProcessor.class)
 @BanyanDB.TimestampColumn(JfrProfilingDataRecord.UPLOAD_TIME)
 public class JfrProfilingDataRecord extends Record {
-    public static final String INDEX_NAME = "jfr_data";
+    public static final String INDEX_NAME = "jfr_profiling_data";
 
     public static final String TASK_ID = "task_id";
     public static final String EVENT_TYPE = "event_type";

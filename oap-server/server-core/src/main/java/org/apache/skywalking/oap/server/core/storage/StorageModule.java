@@ -22,6 +22,7 @@ import org.apache.skywalking.oap.server.core.storage.cache.INetworkAddressAliasD
 import org.apache.skywalking.oap.server.core.storage.management.UIMenuManagementDAO;
 import org.apache.skywalking.oap.server.core.storage.management.UITemplateManagementDAO;
 import org.apache.skywalking.oap.server.core.storage.profiling.asyncprofiler.IAsyncProfilerTaskQueryDAO;
+import org.apache.skywalking.oap.server.core.storage.profiling.asyncprofiler.IJfrDataQueryDAO;
 import org.apache.skywalking.oap.server.core.storage.profiling.continuous.IContinuousProfilingPolicyDAO;
 import org.apache.skywalking.oap.server.core.storage.profiling.ebpf.IServiceLabelDAO;
 import org.apache.skywalking.oap.server.core.storage.profiling.trace.IProfileTaskLogQueryDAO;
@@ -90,7 +91,8 @@ public class StorageModule extends ModuleDefine {
             IZipkinQueryDAO.class,
             ISpanAttachedEventQueryDAO.class,
             IHierarchyQueryDAO.class,
-            IAsyncProfilerTaskQueryDAO.class
+            IAsyncProfilerTaskQueryDAO.class,
+            IJfrDataQueryDAO.class
         };
     }
 }

@@ -32,4 +32,20 @@ public class FrameTree {
         }
         return frameTree;
     }
+
+    public String getFrame() {
+        return frame;
+    }
+
+    public long getTotal() {
+        return total;
+    }
+
+    public long getSelf() {
+        return self;
+    }
+
+    public List<FrameTree> getChildren() {
+        return children;
+    }
 }

@@ -28,7 +28,6 @@ import org.apache.skywalking.library.elasticsearch.requests.search.Sort;
 import org.apache.skywalking.library.elasticsearch.response.search.SearchHit;
 import org.apache.skywalking.library.elasticsearch.response.search.SearchResponse;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskRecord;
-import org.apache.skywalking.oap.server.core.profiling.trace.ProfileTaskRecord;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerEventType;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTask;
 import org.apache.skywalking.oap.server.core.storage.profiling.asyncprofiler.IAsyncProfilerTaskQueryDAO;
@@ -92,11 +91,10 @@ public class AsyncProfilerTaskQueryEsDAO extends EsDAO implements IAsyncProfiler
         if (StringUtil.isEmpty(id)) {
             return null;
         }
-        final String index =
-                IndexController.LogicIndicesRegister.getPhysicalTableName(ProfileTaskRecord.INDEX_NAME);
+        final String index = IndexController.LogicIndicesRegister.getPhysicalTableName(AsyncProfilerTaskRecord.INDEX_NAME);
 
         final SearchBuilder search = Search.builder()
-                .query(Query.bool().must(Query.term(ProfileTaskRecord.TASK_ID, id)))
+                .query(Query.bool().must(Query.term(AsyncProfilerTaskRecord.TASK_ID, id)))
                 .size(1);
 
         final SearchResponse response = getClient().search(index, search.build());

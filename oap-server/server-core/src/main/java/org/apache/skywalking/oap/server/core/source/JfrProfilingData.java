@@ -1,6 +1,7 @@
 package org.apache.skywalking.oap.server.core.source;
 
 import lombok.Data;
+import one.convert.FrameTree;
 import one.jfr.event.JfrEventType;
 
 import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.JFR_PROFILING_DATA;
@@ -28,5 +29,5 @@ public class JfrProfilingData extends Source {
     private String taskId;
     private long uploadTime;
     private JfrEventType eventType;
-    private byte[] dataBinary;
+    private FrameTree frameTree;
 }

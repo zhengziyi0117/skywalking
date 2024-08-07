@@ -55,7 +55,7 @@ public class JfrAnalyzer {
             data.setTaskId(taskId);
             data.setUploadTime(now);
             data.setEventType(event);
-            data.setDataBinary(GSON.toJson(tree).getBytes());
+            data.setFrameTree(tree);
             result.add(data);
         }
 

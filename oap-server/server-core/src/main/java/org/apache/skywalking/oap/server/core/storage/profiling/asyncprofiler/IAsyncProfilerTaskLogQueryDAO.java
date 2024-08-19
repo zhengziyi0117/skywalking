@@ -18,26 +18,17 @@
 
 package org.apache.skywalking.oap.server.core.storage.profiling.asyncprofiler;
 
-import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTask;
+import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskLogRecord;
 import org.apache.skywalking.oap.server.core.storage.DAO;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
-public interface IAsyncProfilerTaskQueryDAO extends DAO {
+public interface IAsyncProfilerTaskLogQueryDAO extends DAO {
     /**
-     * search task list in appoint time bucket
-     *
-     * @param serviceInstanceId monitor service instance id, maybe null
-     * @param startTimeBucket   time bucket bigger than or equals, nullable
-     * @param endTimeBucket     time bucket smaller than or equals, nullable
-     * @param limit             limit count, if null means query all
+     * search all task log in appoint profile task id
+     * @return map key:taskId value:logList
      */
-    List<AsyncProfilerTask> getTaskList(final String serviceInstanceId, final Long startTimeBucket,
-                                        final Long endTimeBucket, final Integer limit) throws IOException;
-
-    /**
-     * query profile task by id
-     */
-    AsyncProfilerTask getById(final String id) throws IOException;
+    Map<String, List<AsyncProfilerTaskLogRecord>> getTaskLogByTaskId(List<String> taskId) throws IOException;
 }

@@ -139,6 +139,7 @@ public class DefaultScopeDefine {
 
     public static final int JFR_PROFILING_DATA = 78;
     public static final int ASYNC_PROFILER_TASK = 79;
+    public static final int ASYNC_PROFILER_TASK_LOG = 80;
 
     /**
      * Catalog of scope, the metrics processor could use this to group all generated metrics by oal rt.

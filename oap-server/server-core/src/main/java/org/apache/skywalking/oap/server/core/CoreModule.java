@@ -21,6 +21,7 @@ package org.apache.skywalking.oap.server.core;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.skywalking.oap.server.core.analysis.meter.MeterSystem;
+import org.apache.skywalking.oap.server.core.cache.AsyncProfilerTaskCache;
 import org.apache.skywalking.oap.server.core.cache.NetworkAddressAliasCache;
 import org.apache.skywalking.oap.server.core.cache.ProfileTaskCache;
 import org.apache.skywalking.oap.server.core.command.CommandService;
@@ -130,6 +131,7 @@ public class CoreModule extends ModuleDefine {
     private void addAsyncProfilerService(List<Class> classes){
         classes.add(AsyncProfilerMutationService.class);
         classes.add(AsyncProfilerQueryService.class);
+        classes.add(AsyncProfilerTaskCache.class);
     }
 
     private void addOALService(List<Class> classes) {

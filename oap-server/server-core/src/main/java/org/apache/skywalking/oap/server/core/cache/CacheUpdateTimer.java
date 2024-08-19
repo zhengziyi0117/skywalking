@@ -20,10 +20,15 @@ package org.apache.skywalking.oap.server.core.cache;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
+import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskLogRecord;
+import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTask;
+import org.apache.skywalking.oap.server.library.util.CollectionUtils;
 import org.apache.skywalking.oap.server.library.util.RunnableWithExceptionProtection;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.analysis.DisableRegister;
@@ -48,9 +53,9 @@ public enum CacheUpdateTimer {
         final long timeInterval = 10;
 
         Executors.newSingleThreadScheduledExecutor()
-                 .scheduleAtFixedRate(
-                     new RunnableWithExceptionProtection(() -> update(moduleDefineHolder), t -> log
-                         .error("Cache update failure.", t)), 1, timeInterval, TimeUnit.SECONDS);
+                .scheduleAtFixedRate(
+                        new RunnableWithExceptionProtection(() -> update(moduleDefineHolder), t -> log
+                                .error("Cache update failure.", t)), 1, timeInterval, TimeUnit.SECONDS);
         this.ttl = ttl;
 
     }
@@ -61,6 +66,10 @@ public enum CacheUpdateTimer {
         if (!DisableRegister.INSTANCE.include(ProfileTaskRecord.INDEX_NAME)) {
             updateProfileTask(moduleDefineHolder);
         }
+
+        if (!DisableRegister.INSTANCE.include(ProfileTaskRecord.INDEX_NAME)) {
+            updateAsyncProfilerTask(moduleDefineHolder);
+        }
     }
 
     /**
@@ -68,12 +77,12 @@ public enum CacheUpdateTimer {
      */
     private void updateNetAddressAliasCache(ModuleDefineHolder moduleDefineHolder) {
         INetworkAddressAliasDAO networkAddressAliasDAO = moduleDefineHolder.find(StorageModule.NAME)
-                                                                           .provider()
-                                                                           .getService(
-                                                                               INetworkAddressAliasDAO.class);
+                .provider()
+                .getService(
+                        INetworkAddressAliasDAO.class);
         NetworkAddressAliasCache addressInventoryCache = moduleDefineHolder.find(CoreModule.NAME)
-                                                                           .provider()
-                                                                           .getService(NetworkAddressAliasCache.class);
+                .provider()
+                .getService(NetworkAddressAliasCache.class);
         long loadStartTime;
         if (addressInventoryCache.currentSize() == 0) {
             /**
@@ -93,15 +102,15 @@ public enum CacheUpdateTimer {
      */
     private void updateProfileTask(ModuleDefineHolder moduleDefineHolder) {
         IProfileTaskQueryDAO profileTaskQueryDAO = moduleDefineHolder.find(StorageModule.NAME)
-                                                                     .provider()
-                                                                     .getService(IProfileTaskQueryDAO.class);
+                .provider()
+                .getService(IProfileTaskQueryDAO.class);
         ProfileTaskCache profileTaskCache = moduleDefineHolder.find(CoreModule.NAME)
-                                                              .provider()
-                                                              .getService(ProfileTaskCache.class);
+                .provider()
+                .getService(ProfileTaskCache.class);
         try {
             final List<ProfileTask> taskList = profileTaskQueryDAO.getTaskList(
-                null, null, profileTaskCache.getCacheStartTimeBucket(), profileTaskCache
-                    .getCacheEndTimeBucket(), null);
+                    null, null, profileTaskCache.getCacheStartTimeBucket(), profileTaskCache
+                            .getCacheEndTimeBucket(), null);
 
             taskList.stream().collect(Collectors.groupingBy(t -> t.getServiceId())).entrySet().stream().forEach(e -> {
                 final String serviceId = e.getKey();
@@ -112,5 +121,33 @@ public enum CacheUpdateTimer {
         } catch (IOException e) {
             log.warn("Unable to update profile task cache", e);
         }
+    }
+
+    private void updateAsyncProfilerTask(ModuleDefineHolder moduleDefineHolder) {
+        AsyncProfilerTaskCache taskCache = moduleDefineHolder.find(CoreModule.NAME)
+                .provider()
+                .getService(AsyncProfilerTaskCache.class);
+
+        try {
+            List<AsyncProfilerTask> taskList = taskCache.getTaskQueryDAO().getTaskList(
+                    null, taskCache.getCacheStartTimeBucket(), taskCache.getCacheEndTimeBucket(), null
+            );
+            if (CollectionUtils.isEmpty(taskList)) {
+                return;
+            }
+            List<String> taskIds = taskList.stream().map(AsyncProfilerTask::getId).collect(Collectors.toList());
+            Map<String, List<AsyncProfilerTaskLogRecord>> taskId2Log = taskCache.getTaskLogQueryDAO()
+                    .getTaskLogByTaskId(taskIds);
+            for (AsyncProfilerTask task : taskList) {
+                if (!taskId2Log.containsKey(task.getId())) {
+                    taskCache.saveTask(task.getServiceInstanceId(), task);
+                }
+            }
+
+        } catch (IOException e) {
+            log.warn("Unable to update async profiler task cache", e);
+        }
+
+        return;
     }
 }

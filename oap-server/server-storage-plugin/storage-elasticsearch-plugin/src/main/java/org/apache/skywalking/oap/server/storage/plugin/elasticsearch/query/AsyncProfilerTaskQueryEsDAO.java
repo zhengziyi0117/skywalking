@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query;
 
-import com.google.gson.Gson;
 import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerDataFormatType;
 import org.apache.skywalking.library.elasticsearch.requests.search.BoolQueryBuilder;
 import org.apache.skywalking.library.elasticsearch.requests.search.Query;
@@ -44,7 +43,6 @@ import java.util.Objects;
 
 public class AsyncProfilerTaskQueryEsDAO extends EsDAO implements IAsyncProfilerTaskQueryDAO {
 
-    private final Gson GSON = new Gson();
     private final int queryMaxSize;
 
     public AsyncProfilerTaskQueryEsDAO(ElasticSearchClient client, int queryMaxSize) {

@@ -36,8 +36,8 @@ public class JfrDataQueryEsDAO extends EsDAO implements IJfrDataQueryDAO {
 
         final SearchResponse response = getClient().search(index, search.build());
         List<JfrProfilingDataRecord> dataRecords = Lists.newArrayList();
-        if (!response.getHits().getHits().isEmpty()) {
-            dataRecords.add(parseData(response.getHits().getHits().iterator().next()));
+        for (SearchHit searchHit : response.getHits().getHits()) {
+            dataRecords.add(parseData(searchHit));
         }
         return dataRecords;
     }

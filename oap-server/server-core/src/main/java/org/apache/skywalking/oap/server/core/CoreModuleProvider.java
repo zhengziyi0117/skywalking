@@ -33,6 +33,7 @@ import org.apache.skywalking.oap.server.core.analysis.metrics.ApdexMetrics;
 import org.apache.skywalking.oap.server.core.analysis.worker.MetricsStreamProcessor;
 import org.apache.skywalking.oap.server.core.analysis.worker.TopNStreamProcessor;
 import org.apache.skywalking.oap.server.core.annotation.AnnotationScan;
+import org.apache.skywalking.oap.server.core.cache.AsyncProfilerTaskCache;
 import org.apache.skywalking.oap.server.core.cache.CacheUpdateTimer;
 import org.apache.skywalking.oap.server.core.cache.NetworkAddressAliasCache;
 import org.apache.skywalking.oap.server.core.cache.ProfileTaskCache;
@@ -315,6 +316,8 @@ public class CoreModuleProvider extends ModuleProvider {
                 AsyncProfilerMutationService.class, new AsyncProfilerMutationService(getManager()));
         this.registerServiceImplementation(
                 AsyncProfilerQueryService.class, new AsyncProfilerQueryService(getManager()));
+        this.registerServiceImplementation(
+                AsyncProfilerTaskCache.class, new AsyncProfilerTaskCache(getManager(), moduleConfig));
         this.registerServiceImplementation(
             EBPFProfilingMutationService.class, new EBPFProfilingMutationService(getManager()));
         this.registerServiceImplementation(

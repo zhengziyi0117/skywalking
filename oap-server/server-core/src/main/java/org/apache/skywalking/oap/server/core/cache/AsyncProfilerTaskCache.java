@@ -89,26 +89,6 @@ public class AsyncProfilerTaskCache implements Service {
     }
 
     /**
-     * query profile task by id
-     */
-//    public ProfileTask getProfileTaskById(String id) {
-//        ProfileTask profile = .getIfPresent(id);
-//
-//        if (profile == null) {
-//            try {
-//                profile = getProfileTaskQueryDAO().getById(id);
-//            } catch (IOException e) {
-//                LOGGER.error(e.getMessage(), e);
-//            }
-//            if (profile != null) {
-//                profileTaskIdCache.put(id, profile);
-//            }
-//        }
-//
-//        return profile;
-//    }
-
-    /**
      * use for every db query, -5 start time
      */
     public long getCacheStartTimeBucket() {

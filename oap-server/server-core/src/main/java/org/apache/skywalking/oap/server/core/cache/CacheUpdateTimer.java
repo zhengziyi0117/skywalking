@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskLogRecord;
+import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskRecord;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTask;
 import org.apache.skywalking.oap.server.library.util.CollectionUtils;
 import org.apache.skywalking.oap.server.library.util.RunnableWithExceptionProtection;
@@ -67,7 +68,7 @@ public enum CacheUpdateTimer {
             updateProfileTask(moduleDefineHolder);
         }
 
-        if (!DisableRegister.INSTANCE.include(ProfileTaskRecord.INDEX_NAME)) {
+        if (!DisableRegister.INSTANCE.include(AsyncProfilerTaskRecord.INDEX_NAME)) {
             updateAsyncProfilerTask(moduleDefineHolder);
         }
     }

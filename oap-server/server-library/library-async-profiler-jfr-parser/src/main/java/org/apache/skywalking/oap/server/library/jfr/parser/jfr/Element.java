@@ -16,25 +16,15 @@
  *
  */
 
-package org.apache.skywalking.oap.server.core.query.type;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-/**
- * create profile task result
+/*
+ * Copyright The async-profiler authors
+ * SPDX-License-Identifier: Apache-2.0
  */
-@Setter
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class AsyncProfilerTaskCreationResult {
-    // if null or empty means the task create success, otherwise get create error reason
-    private String errorReason;
-    // get data id when create success
-    private String id;
+
+package org.apache.skywalking.oap.server.library.jfr.parser.jfr;
+
+class Element {
+
+    void addChild(Element e) {
+    }
 }

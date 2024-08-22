@@ -23,7 +23,6 @@ import graphql.kickstart.tools.SchemaParser;
 import graphql.kickstart.tools.SchemaParserBuilder;
 import graphql.scalars.ExtendedScalars;
 
-import java.util.Arrays;
 import java.util.Collections;
 import org.apache.skywalking.oap.query.graphql.resolver.AggregationQuery;
 import org.apache.skywalking.oap.query.graphql.resolver.AlarmQuery;
@@ -151,7 +150,7 @@ public class GraphQLQueryProvider extends ModuleProvider {
                      .resolvers(new RecordsQuery(getManager()))
                      .file("query-protocol/hierarchy.graphqls").resolvers(new HierarchyQuery(getManager()))
                      .file("query-protocol/async-profiler.graphqls")
-                .resolvers(new AsyncProfilerQuery(getManager()),new AsyncProfilerMutation(getManager()));
+                     .resolvers(new AsyncProfilerQuery(getManager()), new AsyncProfilerMutation(getManager()));
 
         if (config.isEnableOnDemandPodLog()) {
             schemaBuilder

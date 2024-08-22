@@ -19,13 +19,12 @@
 package org.apache.skywalking.oap.server.core.profiling.asyncprofiler.analyze;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import one.convert.Arguments;
-import one.convert.FrameTree;
-import one.convert.JfrParser;
-import one.jfr.event.JfrEventType;
 import org.apache.skywalking.oap.server.core.source.JfrProfilingData;
+import org.apache.skywalking.oap.server.library.jfr.parser.convert.Arguments;
+import org.apache.skywalking.oap.server.library.jfr.parser.convert.FrameTree;
+import org.apache.skywalking.oap.server.library.jfr.parser.convert.JfrParser;
+import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
 import org.apache.skywalking.oap.server.library.module.ModuleManager;
 
 import java.io.IOException;
@@ -34,7 +33,6 @@ import java.util.Map;
 
 @Slf4j
 public class JfrAnalyzer {
-    private final Gson GSON = new Gson();
     private final ModuleManager moduleManager;
 
     public JfrAnalyzer(ModuleManager moduleManager) {

@@ -29,6 +29,8 @@ import org.apache.skywalking.oap.server.core.storage.annotation.Column;
 import org.apache.skywalking.oap.server.core.storage.type.Convert2Entity;
 import org.apache.skywalking.oap.server.core.storage.type.Convert2Storage;
 import org.apache.skywalking.oap.server.core.storage.type.StorageBuilder;
+import org.apache.skywalking.oap.server.library.jfr.parser.convert.FrameTree;
+import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
 
 import java.nio.charset.StandardCharsets;
 
@@ -49,7 +51,7 @@ public class JfrProfilingDataRecord extends Record {
     @Column(name = TASK_ID)
     private String taskId;
     /**
-     * @see one.jfr.event.JfrEventType
+     * @see JfrEventType
      */
     @Column(name = EVENT_TYPE)
     private String eventType;
@@ -57,7 +59,7 @@ public class JfrProfilingDataRecord extends Record {
     @Column(name = UPLOAD_TIME)
     private long uploadTime;
     /**
-     * @see one.convert.FrameTree
+     * @see FrameTree
      */
     @Column(name = DATA_BINARY, storageOnly = true)
     private byte[] dataBinary;
@@ -84,7 +86,7 @@ public class JfrProfilingDataRecord extends Record {
         public JfrProfilingDataRecord storage2Entity(final Convert2Entity converter) {
             final JfrProfilingDataRecord dataTraffic = new JfrProfilingDataRecord();
             dataTraffic.setTimeBucket(((Number) converter.get(TIME_BUCKET)).longValue());
-            dataTraffic.setTaskId(((String) converter.get(TASK_ID)));
+            dataTraffic.setTaskId((String) converter.get(TASK_ID));
             dataTraffic.setUploadTime(((Number) converter.get(UPLOAD_TIME)).longValue());
             dataTraffic.setEventType((String) converter.get(EVENT_TYPE));
             dataTraffic.setDataBinary(converter.getBytes(DATA_BINARY));

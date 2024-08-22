@@ -2,8 +2,8 @@ package org.apache.skywalking.oap.server.core.profiling.asyncprofiler;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
-import one.convert.FrameTree;
-import one.jfr.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.convert.FrameTree;
+import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
 import org.apache.skywalking.oap.server.core.analysis.TimeBucket;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.JfrProfilingDataRecord;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerStackTree;
@@ -63,7 +63,7 @@ public class AsyncProfilerQueryService implements Service {
     public List<AsyncProfilerStackTree> queryJfrData(String taskId) throws IOException {
         List<JfrProfilingDataRecord> jfrDataList = getJfrDataQueryDAO().getById(taskId);
 
-        return jfrDataList.stream().map((data) -> {
+        return jfrDataList.stream().map(data -> {
             JfrEventType jfrEventType = JfrEventType.valueOf(data.getEventType());
             FrameTree frameTree = GSON.fromJson(new String(data.getDataBinary()), FrameTree.class);
             return new AsyncProfilerStackTree(jfrEventType, frameTree);

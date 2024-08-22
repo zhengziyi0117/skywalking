@@ -1,11 +1,10 @@
 package org.apache.skywalking.oap.server.core.source;
 
 import lombok.Data;
-import one.convert.FrameTree;
-import one.jfr.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.convert.FrameTree;
+import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
 
 import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.JFR_PROFILING_DATA;
-
 
 @Data
 @ScopeDeclaration(id = JFR_PROFILING_DATA, name = "JfrProfilingData")

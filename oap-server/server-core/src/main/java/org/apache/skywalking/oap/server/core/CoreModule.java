@@ -128,7 +128,7 @@ public class CoreModule extends ModuleDefine {
         classes.add(ProfileTaskCache.class);
     }
 
-    private void addAsyncProfilerService(List<Class> classes){
+    private void addAsyncProfilerService(List<Class> classes) {
         classes.add(AsyncProfilerMutationService.class);
         classes.add(AsyncProfilerQueryService.class);
         classes.add(AsyncProfilerTaskCache.class);

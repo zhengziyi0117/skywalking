@@ -15,6 +15,7 @@
  * limitations under the License.
  *
  */
+
 package org.apache.skywalking.oap.server.core.query.type;
 
 import lombok.AllArgsConstructor;

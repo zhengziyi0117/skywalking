@@ -16,25 +16,26 @@
  *
  */
 
-package org.apache.skywalking.oap.server.core.query.type;
+package org.apache.skywalking.oap.server.library.jfr.parser.convert;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.apache.skywalking.oap.server.library.jfr.parser.jfr.JfrReader;
+import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
 
-/**
- * create profile task result
- */
-@Setter
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class AsyncProfilerTaskCreationResult {
-    // if null or empty means the task create success, otherwise get create error reason
-    private String errorReason;
-    // get data id when create success
-    private String id;
+import java.io.IOException;
+import java.util.Map;
+
+public class JfrParser {
+
+    public static Map<JfrEventType, FrameTree> dumpTree(String fileName, Arguments args) throws IOException {
+        try (JfrReader jfr = new JfrReader(fileName)) {
+            JfrToFrameTree converter = new JfrToFrameTree(jfr, args);
+            converter.convert();
+            return converter.getFrameTreeMap();
+//            JfrToFlame converter = new JfrToFlame(jfr, args);
+//            converter.convert();
+//            converter.dump(null);
+//            return null;
+        }
+    }
+
 }

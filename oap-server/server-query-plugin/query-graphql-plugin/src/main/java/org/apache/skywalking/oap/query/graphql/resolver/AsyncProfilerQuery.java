@@ -4,11 +4,13 @@ import graphql.kickstart.tools.GraphQLQueryResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.AsyncProfilerQueryService;
-import org.apache.skywalking.oap.server.core.query.input.AsyncProfilerTaskRequest;
+import org.apache.skywalking.oap.server.core.query.input.AsyncProfilerAnalyzatonRequest;
+import org.apache.skywalking.oap.server.core.query.input.AsyncProfilerTaskListRequest;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerAnalyzation;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerStackTree;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTask;
-import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTaskResult;
+import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTaskListResult;
+import org.apache.skywalking.oap.server.core.query.type.ProfileTaskLog;
 import org.apache.skywalking.oap.server.library.module.ModuleManager;
 
 import java.io.IOException;
@@ -33,15 +35,21 @@ public class AsyncProfilerQuery implements GraphQLQueryResolver {
         return queryService;
     }
 
-    public AsyncProfilerTaskResult queryAsyncProfilerTask(AsyncProfilerTaskRequest request) throws IOException {
+    public AsyncProfilerTaskListResult queryAsyncProfilerTaskList(AsyncProfilerTaskListRequest request) throws IOException {
         List<AsyncProfilerTask> tasks = getAsyncProfilerQueryService().queryTask(
-                request.getServiceInstanceId(), request.getStartTime(), request.getEndTime()
+                request.getServiceId(), request.getStartTime(), request.getEndTime()
         );
-        return new AsyncProfilerTaskResult(null, tasks);
+        return new AsyncProfilerTaskListResult(null, tasks);
     }
 
-    public AsyncProfilerAnalyzation queryAsyncProfilerAnalyze(String taskId) throws IOException {
-        List<AsyncProfilerStackTree> eventFrameTrees = getAsyncProfilerQueryService().queryJfrData(taskId);
+    public AsyncProfilerAnalyzation queryAsyncProfilerAnalyze(AsyncProfilerAnalyzatonRequest request) throws IOException {
+        AsyncProfilerStackTree eventFrameTrees = getAsyncProfilerQueryService().queryJfrData(
+                request.getTaskId(), request.getInstanceIds(), request.getEventType()
+        );
         return new AsyncProfilerAnalyzation(null, eventFrameTrees);
+    }
+
+    public List<ProfileTaskLog> queryAsyncProfilerTaskLogs(String taskId) throws IOException {
+        return getAsyncProfilerQueryService().queryAsyncProfilerTaskLogs(taskId);
     }
 }

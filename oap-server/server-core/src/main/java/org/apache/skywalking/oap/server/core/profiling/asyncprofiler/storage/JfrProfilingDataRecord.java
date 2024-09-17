@@ -30,7 +30,7 @@ import org.apache.skywalking.oap.server.core.storage.type.Convert2Entity;
 import org.apache.skywalking.oap.server.core.storage.type.Convert2Storage;
 import org.apache.skywalking.oap.server.core.storage.type.StorageBuilder;
 import org.apache.skywalking.oap.server.library.jfr.parser.convert.FrameTree;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType;
 
 import java.nio.charset.StandardCharsets;
 
@@ -45,11 +45,16 @@ public class JfrProfilingDataRecord extends Record {
 
     public static final String TASK_ID = "task_id";
     public static final String EVENT_TYPE = "event_type";
+    public static final String INSTANCE_ID = "instance_id";
     public static final String DATA_BINARY = "data_binary";
     public static final String UPLOAD_TIME = "upload_time";
 
     @Column(name = TASK_ID)
     private String taskId;
+
+    @Column(name = INSTANCE_ID)
+    private String instanceId;
+
     /**
      * @see JfrEventType
      */
@@ -58,6 +63,7 @@ public class JfrProfilingDataRecord extends Record {
 
     @Column(name = UPLOAD_TIME)
     private long uploadTime;
+
     /**
      * @see FrameTree
      */
@@ -69,11 +75,13 @@ public class JfrProfilingDataRecord extends Record {
         return new StorageID().appendMutant(
                 new String[]{
                         TASK_ID,
+                        INSTANCE_ID,
                         EVENT_TYPE,
                         UPLOAD_TIME
                 },
                 Hashing.sha256().newHasher()
                         .putString(taskId, StandardCharsets.UTF_8)
+                        .putString(instanceId, StandardCharsets.UTF_8)
                         .putString(eventType, StandardCharsets.UTF_8)
                         .putLong(uploadTime)
                         .hash().toString()
@@ -87,6 +95,7 @@ public class JfrProfilingDataRecord extends Record {
             final JfrProfilingDataRecord dataTraffic = new JfrProfilingDataRecord();
             dataTraffic.setTimeBucket(((Number) converter.get(TIME_BUCKET)).longValue());
             dataTraffic.setTaskId((String) converter.get(TASK_ID));
+            dataTraffic.setInstanceId((String) converter.get(INSTANCE_ID));
             dataTraffic.setUploadTime(((Number) converter.get(UPLOAD_TIME)).longValue());
             dataTraffic.setEventType((String) converter.get(EVENT_TYPE));
             dataTraffic.setDataBinary(converter.getBytes(DATA_BINARY));
@@ -97,6 +106,7 @@ public class JfrProfilingDataRecord extends Record {
         public void entity2Storage(final JfrProfilingDataRecord storageData, final Convert2Storage converter) {
             converter.accept(TIME_BUCKET, storageData.getTimeBucket());
             converter.accept(TASK_ID, storageData.getTaskId());
+            converter.accept(INSTANCE_ID, storageData.getInstanceId());
             converter.accept(UPLOAD_TIME, storageData.getUploadTime());
             converter.accept(EVENT_TYPE, storageData.getEventType());
             converter.accept(DATA_BINARY, storageData.getDataBinary());

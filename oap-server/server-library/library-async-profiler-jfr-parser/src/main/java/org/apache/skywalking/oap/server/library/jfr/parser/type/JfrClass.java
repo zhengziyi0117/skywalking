@@ -21,44 +21,38 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr.event;
+package org.apache.skywalking.oap.server.library.jfr.parser.type;
 
-public class ContendedLock extends Event {
-    public final long duration;
-    public final int classId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-    public ContendedLock(long time, int tid, int stackTraceId, long duration, int classId) {
-        super(time, tid, stackTraceId);
-        this.duration = duration;
-        this.classId = classId;
+class JfrClass extends Element {
+    final int id;
+    final boolean simpleType;
+    final String name;
+    final List<JfrField> fields;
+
+    JfrClass(Map<String, String> attributes) {
+        this.id = Integer.parseInt(attributes.get("id"));
+        this.simpleType = "true".equals(attributes.get("simpleType"));
+        this.name = attributes.get("name");
+        this.fields = new ArrayList<>(2);
     }
 
     @Override
-    public int hashCode() {
-        return classId * 127 + stackTraceId;
-    }
-
-    @Override
-    public boolean sameGroup(Event o) {
-        if (o instanceof ContendedLock) {
-            ContendedLock c = (ContendedLock) o;
-            return classId == c.classId;
+    void addChild(Element e) {
+        if (e instanceof JfrField) {
+            fields.add((JfrField) e);
         }
-        return false;
     }
 
-    @Override
-    public long classId() {
-        return classId;
-    }
-
-    @Override
-    public long value() {
-        return duration;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return this == o;
+    JfrField field(String name) {
+        for (JfrField field : fields) {
+            if (field.name.equals(name)) {
+                return field;
+            }
+        }
+        return null;
     }
 }

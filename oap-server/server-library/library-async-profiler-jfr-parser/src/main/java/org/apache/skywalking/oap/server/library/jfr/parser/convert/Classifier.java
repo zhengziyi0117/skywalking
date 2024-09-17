@@ -23,7 +23,7 @@
 
 package org.apache.skywalking.oap.server.library.jfr.parser.convert;
 
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.StackTrace;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.StackTrace;
 
 import static org.apache.skywalking.oap.server.library.jfr.parser.convert.Frame.TYPE_C1_COMPILED;
 import static org.apache.skywalking.oap.server.library.jfr.parser.convert.Frame.TYPE_CPP;

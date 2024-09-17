@@ -27,10 +27,10 @@ public enum AsyncProfilerTaskLogOperationType {
     EXECUTION_FINISHED(2);
 
     private int code;
-    private static final Map<Integer, ProfileTaskLogOperationType> CACHE = new HashMap<Integer, ProfileTaskLogOperationType>();
+    private static final Map<Integer, AsyncProfilerTaskLogOperationType> CACHE = new HashMap<Integer, AsyncProfilerTaskLogOperationType>();
 
     static {
-        for (ProfileTaskLogOperationType val : ProfileTaskLogOperationType.values()) {
+        for (AsyncProfilerTaskLogOperationType val : AsyncProfilerTaskLogOperationType.values()) {
             CACHE.put(val.getCode(), val);
         }
     }
@@ -38,7 +38,7 @@ public enum AsyncProfilerTaskLogOperationType {
     /**
      * Parse opetation type by code
      */
-    public static ProfileTaskLogOperationType parse(int code) {
+    public static AsyncProfilerTaskLogOperationType parse(int code) {
         return CACHE.get(code);
     }
 

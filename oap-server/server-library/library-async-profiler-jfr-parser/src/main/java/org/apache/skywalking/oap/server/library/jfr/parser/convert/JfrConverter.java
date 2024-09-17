@@ -23,18 +23,18 @@
 
 package org.apache.skywalking.oap.server.library.jfr.parser.convert;
 
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.ClassRef;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.Dictionary;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.JfrReader;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.MethodRef;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.AllocationSample;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.ContendedLock;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.Event;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.EventAggregator;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.EventPair;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.ExecutionSample;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.LiveObject;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.ClassRef;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.Dictionary;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.JfrReader;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.MethodRef;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.AllocationSample;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.ContendedLock;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.Event;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.EventAggregator;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.EventPair;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.ExecutionSample;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.LiveObject;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -45,12 +45,12 @@ import static org.apache.skywalking.oap.server.library.jfr.parser.convert.Frame.
 import static org.apache.skywalking.oap.server.library.jfr.parser.convert.Frame.TYPE_CPP;
 import static org.apache.skywalking.oap.server.library.jfr.parser.convert.Frame.TYPE_KERNEL;
 import static org.apache.skywalking.oap.server.library.jfr.parser.convert.Frame.TYPE_NATIVE;
-import static org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType.EXECUTION_SAMPLE;
-import static org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType.JAVA_MONITOR_ENTER;
-import static org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType.OBJECT_ALLOCATION_IN_NEW_TLAB;
-import static org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType.OBJECT_ALLOCATION_OUTSIDE_TLAB;
-import static org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType.PROFILER_LIVE_OBJECT;
-import static org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType.THREAD_PARK;
+import static org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType.EXECUTION_SAMPLE;
+import static org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType.JAVA_MONITOR_ENTER;
+import static org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType.OBJECT_ALLOCATION_IN_NEW_TLAB;
+import static org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType.OBJECT_ALLOCATION_OUTSIDE_TLAB;
+import static org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType.PROFILER_LIVE_OBJECT;
+import static org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType.THREAD_PARK;
 
 public abstract class JfrConverter extends Classifier {
     protected final JfrReader jfr;

@@ -16,23 +16,21 @@
  *
  */
 
-/*
- * Copyright The async-profiler authors
- * SPDX-License-Identifier: Apache-2.0
- */
+package org.apache.skywalking.oap.server.library.jfr.parser.type.event;
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-import java.util.Map;
+@Getter
+@AllArgsConstructor
+public enum JfrEventType {
+    UNKNOWN(-1),
+    EXECUTION_SAMPLE(1),
+    JAVA_MONITOR_ENTER(2),
+    THREAD_PARK(3),
+    OBJECT_ALLOCATION_IN_NEW_TLAB(4),
+    OBJECT_ALLOCATION_OUTSIDE_TLAB(5),
+    PROFILER_LIVE_OBJECT(6);
 
-class JfrField extends Element {
-    final String name;
-    final int type;
-    final boolean constantPool;
-
-    JfrField(Map<String, String> attributes) {
-        this.name = attributes.get("name");
-        this.type = Integer.parseInt(attributes.get("class"));
-        this.constantPool = "true".equals(attributes.get("constantPool"));
-    }
+    private final int code;
 }

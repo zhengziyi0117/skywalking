@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class AsyncProfilerTaskResult {
+public class AsyncProfilerTaskListResult {
     private String errorReason;
     private List<AsyncProfilerTask> tasks;
 }

@@ -28,16 +28,19 @@ public interface IAsyncProfilerTaskQueryDAO extends DAO {
     /**
      * search task list in appoint time bucket
      *
-     * @param serviceInstanceId monitor service instance id, maybe null
-     * @param startTimeBucket   time bucket bigger than or equals, nullable
-     * @param endTimeBucket     time bucket smaller than or equals, nullable
-     * @param limit             limit count, if null means query all
+     * @param serviceId       monitor service id, maybe null
+     * @param startTimeBucket time bucket bigger than or equals, nullable
+     * @param endTimeBucket   time bucket smaller than or equals, nullable
+     * @param limit           limit count, if null means query all
      */
-    List<AsyncProfilerTask> getTaskList(final String serviceInstanceId, final Long startTimeBucket,
+    List<AsyncProfilerTask> getTaskList(final String serviceId, final Long startTimeBucket,
                                         final Long endTimeBucket, final Integer limit) throws IOException;
 
     /**
      * query profile task by id
+     *
+     * @param id taskId
+     * @return task data
      */
     AsyncProfilerTask getById(final String id) throws IOException;
 }

@@ -21,18 +21,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr;
+package org.apache.skywalking.oap.server.library.jfr.parser.type;
 
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.AllocationSample;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.CPULoad;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.ContendedLock;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.Event;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.EventPair;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.ExecutionSample;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.GCHeapSummary;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.LiveObject;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.ObjectCount;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.AllocationSample;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.CPULoad;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.ContendedLock;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.Event;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.EventPair;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.ExecutionSample;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.GCHeapSummary;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.LiveObject;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.ObjectCount;
 
 import java.io.Closeable;
 import java.io.IOException;

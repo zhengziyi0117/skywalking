@@ -16,21 +16,24 @@
  *
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr.event;
+/*
+ * Copyright The async-profiler authors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+package org.apache.skywalking.oap.server.library.jfr.parser.type.event;
 
-@Getter
-@AllArgsConstructor
-public enum JfrEventType {
-    UNKNOWN(-1),
-    EXECUTION_SAMPLE(1),
-    JAVA_MONITOR_ENTER(2),
-    THREAD_PARK(3),
-    OBJECT_ALLOCATION_IN_NEW_TLAB(4),
-    OBJECT_ALLOCATION_OUTSIDE_TLAB(5),
-    PROFILER_LIVE_OBJECT(6);
+import org.apache.skywalking.oap.server.library.jfr.parser.type.JfrReader;
 
-    private final int code;
+public class CPULoad extends Event {
+    public final float jvmUser;
+    public final float jvmSystem;
+    public final float machineTotal;
+
+    public CPULoad(JfrReader jfr) {
+        super(jfr.getVarlong(), 0, 0);
+        this.jvmUser = jfr.getFloat();
+        this.jvmSystem = jfr.getFloat();
+        this.machineTotal = jfr.getFloat();
+    }
 }

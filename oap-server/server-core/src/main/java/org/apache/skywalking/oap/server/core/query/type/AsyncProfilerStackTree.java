@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.skywalking.oap.server.library.jfr.parser.convert.FrameTree;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType;
 
 import java.util.List;
 import java.util.Objects;

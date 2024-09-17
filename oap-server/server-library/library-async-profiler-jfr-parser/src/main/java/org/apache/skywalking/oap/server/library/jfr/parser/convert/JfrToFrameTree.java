@@ -18,12 +18,12 @@
 
 package org.apache.skywalking.oap.server.library.jfr.parser.convert;
 
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.JfrReader;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.StackTrace;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.AllocationSample;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.Event;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.EventAggregator;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.JfrReader;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.StackTrace;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.AllocationSample;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.Event;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.EventAggregator;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import static org.apache.skywalking.oap.server.library.jfr.parser.convert.Frame.
 
 public class JfrToFrameTree extends JfrConverter {
 
-    private final Map<JfrEventType, FrameTree> event2builderMap = new HashMap<>();
+    private final Map<JfrEventType, FrameTreeBuilder> event2builderMap = new HashMap<>();
 
     public JfrToFrameTree(JfrReader jfr, Arguments args) {
         super(jfr, args);
@@ -47,7 +47,7 @@ public class JfrToFrameTree extends JfrConverter {
         for (Map.Entry<JfrEventType, EventAggregator> entry : event2aggMap.entrySet()) {
             JfrEventType event = entry.getKey();
             EventAggregator agg = entry.getValue();
-            FrameTreeBuilder frameTreeBuilder = new FrameTreeBuilder(args);
+            FrameTreeBuilder frameTreeBuilder = event2builderMap.computeIfAbsent(event, (eventType) -> new FrameTreeBuilder(args));
 
             agg.forEach(new EventAggregator.Visitor() {
                 final CallStack stack = new CallStack();
@@ -91,12 +91,17 @@ public class JfrToFrameTree extends JfrConverter {
                     }
                 }
             });
-            event2builderMap.put(event, frameTreeBuilder.build());
         }
     }
 
     public Map<JfrEventType, FrameTree> getFrameTreeMap() {
-        return event2builderMap;
+        Map<JfrEventType, FrameTree> resMap = new HashMap<>();
+        for (Map.Entry<JfrEventType, FrameTreeBuilder> entry : event2builderMap.entrySet()) {
+            JfrEventType event = entry.getKey();
+            FrameTreeBuilder frameTreeBuilder = entry.getValue();
+            resMap.put(event, frameTreeBuilder.build());
+        }
+        return resMap;
     }
 
 }

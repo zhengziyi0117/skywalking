@@ -31,6 +31,7 @@ public class JfrProfilingDataDispatcher implements SourceDispatcher<JfrProfiling
     public void dispatch(JfrProfilingData source) {
         JfrProfilingDataRecord record = new JfrProfilingDataRecord();
         record.setTaskId(source.getTaskId());
+        record.setInstanceId(source.getInstanceId());
         record.setEventType(source.getEventType().toString());
         record.setDataBinary(GSON.toJson(source.getFrameTree()).getBytes());
         record.setUploadTime(source.getUploadTime());

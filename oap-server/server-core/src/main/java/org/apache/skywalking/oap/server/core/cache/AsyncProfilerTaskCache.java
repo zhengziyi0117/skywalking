@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 public class AsyncProfilerTaskCache implements Service {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncProfilerTaskCache.class);
 
-    private final Cache<String, AsyncProfilerTask> instanceId2taskCache;
+    private final Cache<String, AsyncProfilerTask> serviceId2taskCache;
 
     private final ModuleManager moduleManager;
 
@@ -50,7 +50,7 @@ public class AsyncProfilerTaskCache implements Service {
         long initialSize = moduleConfig.getMaxSizeOfProfileTask() / 10L;
         int initialCapacitySize = (int) (initialSize > Integer.MAX_VALUE ? Integer.MAX_VALUE : initialSize);
 
-        instanceId2taskCache = CacheBuilder.newBuilder()
+        serviceId2taskCache = CacheBuilder.newBuilder()
                 .initialCapacity(initialCapacitySize)
                 .maximumSize(moduleConfig.getMaxSizeOfProfileTask())
                 // remove old profile task data
@@ -67,7 +67,7 @@ public class AsyncProfilerTaskCache implements Service {
         return taskLogQueryDAO;
     }
 
-    public IAsyncProfilerTaskQueryDAO getTaskQueryDAO() {
+    private IAsyncProfilerTaskQueryDAO getTaskQueryDAO() {
         if (Objects.isNull(taskQueryDAO)) {
             taskQueryDAO = moduleManager.find(StorageModule.NAME)
                     .provider()
@@ -76,16 +76,16 @@ public class AsyncProfilerTaskCache implements Service {
         return taskQueryDAO;
     }
 
-    public AsyncProfilerTask getAsyncProfilerTask(String serviceInstanceId) {
-        return instanceId2taskCache.getIfPresent(serviceInstanceId);
+    public AsyncProfilerTask getAsyncProfilerTask(String serviceId) {
+        return serviceId2taskCache.getIfPresent(serviceId);
     }
 
-    public void saveTask(String serviceInstanceId, AsyncProfilerTask task) {
+    public void saveTask(String serviceId, AsyncProfilerTask task) {
         if (task == null) {
             return ;
         }
 
-        instanceId2taskCache.put(serviceInstanceId, task);
+        serviceId2taskCache.put(serviceId, task);
     }
 
     /**

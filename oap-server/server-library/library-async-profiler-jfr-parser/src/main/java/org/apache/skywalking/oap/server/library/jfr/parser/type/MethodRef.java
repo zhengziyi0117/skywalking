@@ -21,10 +21,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr;
+package org.apache.skywalking.oap.server.library.jfr.parser.type;
 
-class Element {
+public class MethodRef {
+    public final long cls;
+    public final long name;
+    public final long sig;
 
-    void addChild(Element e) {
+    public MethodRef(long cls, long name, long sig) {
+        this.cls = cls;
+        this.name = name;
+        this.sig = sig;
     }
 }

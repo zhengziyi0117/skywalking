@@ -10,5 +10,5 @@ public interface IJfrDataQueryDAO extends Service {
     /**
      * query profile task by id
      */
-    List<JfrProfilingDataRecord> getById(final String id) throws IOException;
+    List<JfrProfilingDataRecord> getById(final String taskId, List<String> instanceIds, final String eventType) throws IOException;
 }

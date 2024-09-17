@@ -18,8 +18,8 @@
 
 package org.apache.skywalking.oap.server.library.jfr.parser.convert;
 
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.JfrReader;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.JfrReader;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType;
 
 import java.io.IOException;
 import java.util.Map;
@@ -31,10 +31,6 @@ public class JfrParser {
             JfrToFrameTree converter = new JfrToFrameTree(jfr, args);
             converter.convert();
             return converter.getFrameTreeMap();
-//            JfrToFlame converter = new JfrToFlame(jfr, args);
-//            converter.convert();
-//            converter.dump(null);
-//            return null;
         }
     }
 

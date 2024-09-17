@@ -45,7 +45,7 @@ public class AsyncProfilerTaskRecord extends NoneStream {
     public static final String INDEX_NAME = "async_profiler_task";
     public static final String TASK_ID = "task_id";
     public static final String SERVICE_ID = "service_id";
-    public static final String SERVICE_INSTANCE_ID = "service_instance_id";
+    public static final String SERVICE_INSTANCE_IDS = "service_instance_ids";
     public static final String CREATE_TIME = "create_time";
     public static final String DATA_FORMAT = "data_format";
     public static final String EVENT_TYPES = "events";
@@ -55,8 +55,8 @@ public class AsyncProfilerTaskRecord extends NoneStream {
     @Column(name = SERVICE_ID)
     @BanyanDB.SeriesID(index = 0)
     private String serviceId;
-    @Column(name = SERVICE_INSTANCE_ID)
-    private String serviceInstanceId;
+    @Column(name = SERVICE_INSTANCE_IDS)
+    private List<String> serviceInstanceIds;
     @Column(name = TASK_ID)
     private String taskId;
     @Column(name = CREATE_TIME)
@@ -80,7 +80,7 @@ public class AsyncProfilerTaskRecord extends NoneStream {
         public AsyncProfilerTaskRecord storage2Entity(final Convert2Entity converter) {
             final AsyncProfilerTaskRecord record = new AsyncProfilerTaskRecord();
             record.setServiceId((String) converter.get(SERVICE_ID));
-            record.setServiceInstanceId((String) converter.get(SERVICE_INSTANCE_ID));
+            record.setServiceInstanceIds((List<String>) converter.get(SERVICE_INSTANCE_IDS));
             record.setTaskId((String) converter.get(TASK_ID));
             record.setCreateTime(((Number) converter.get(CREATE_TIME)).longValue());
             record.setDuration(((Number) converter.get(DURATION)).intValue());
@@ -94,7 +94,7 @@ public class AsyncProfilerTaskRecord extends NoneStream {
         @Override
         public void entity2Storage(final AsyncProfilerTaskRecord storageData, final Convert2Storage converter) {
             converter.accept(SERVICE_ID, storageData.getServiceId());
-            converter.accept(SERVICE_INSTANCE_ID, storageData.getServiceInstanceId());
+            converter.accept(SERVICE_INSTANCE_IDS, storageData.getServiceInstanceIds());
             converter.accept(TASK_ID, storageData.getTaskId());
             converter.accept(CREATE_TIME, storageData.getCreateTime());
             converter.accept(DURATION, storageData.getDuration());

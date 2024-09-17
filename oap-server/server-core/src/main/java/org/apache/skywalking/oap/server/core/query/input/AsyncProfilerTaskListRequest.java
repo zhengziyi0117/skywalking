@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AsyncProfilerTaskRequest {
+public class AsyncProfilerTaskListRequest {
     private String serviceId;
-    private String serviceInstanceId;
     private Long startTime;
     private Long endTime;
+    private Integer limit;
 }

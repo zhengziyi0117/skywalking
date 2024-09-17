@@ -65,13 +65,11 @@ public class CommandService implements Service {
 
     public AsyncProfilerTaskCommand newAsyncProfileTaskCommand(AsyncProfilerTask task) {
         final String serialNumber = UUID.randomUUID().toString();
-        final String comma = ",";
         List<String> eventNames = task.getEvents().stream()
                 .map(AsyncProfilerEventType::getName)
                 .collect(Collectors.toList());
         return new AsyncProfilerTaskCommand(serialNumber, task.getId(), task.getDuration(),
-                task.getDataFormat(), String.join(comma, eventNames),
-                task.getExecArgs(), task.getCreateTime());
+                eventNames, task.getExecArgs(), task.getCreateTime());
     }
 
     /**

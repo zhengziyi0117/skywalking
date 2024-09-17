@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskLogRecord;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskRecord;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTask;
+import org.apache.skywalking.oap.server.core.storage.profiling.asyncprofiler.IAsyncProfilerTaskQueryDAO;
 import org.apache.skywalking.oap.server.library.util.CollectionUtils;
 import org.apache.skywalking.oap.server.library.util.RunnableWithExceptionProtection;
 import org.apache.skywalking.oap.server.core.CoreModule;
@@ -128,21 +129,20 @@ public enum CacheUpdateTimer {
         AsyncProfilerTaskCache taskCache = moduleDefineHolder.find(CoreModule.NAME)
                 .provider()
                 .getService(AsyncProfilerTaskCache.class);
-
+        IAsyncProfilerTaskQueryDAO taskQueryDAO = moduleDefineHolder.find(StorageModule.NAME)
+                .provider()
+                .getService(IAsyncProfilerTaskQueryDAO.class);
         try {
-            List<AsyncProfilerTask> taskList = taskCache.getTaskQueryDAO().getTaskList(
+            List<AsyncProfilerTask> taskList = taskQueryDAO.getTaskList(
                     null, taskCache.getCacheStartTimeBucket(), taskCache.getCacheEndTimeBucket(), null
             );
             if (CollectionUtils.isEmpty(taskList)) {
                 return;
             }
-            List<String> taskIds = taskList.stream().map(AsyncProfilerTask::getId).collect(Collectors.toList());
-            Map<String, List<AsyncProfilerTaskLogRecord>> taskId2Log = taskCache.getTaskLogQueryDAO()
-                    .getTaskLogByTaskId(taskIds);
+//            List<String> taskIds = taskList.stream().map(AsyncProfilerTask::getId).collect(Collectors.toList());
+//            Map<String, List<AsyncProfilerTaskLogRecord>> taskId2Log = taskCache.getTaskLogQueryDAO().getTaskLogByTaskId(taskIds);
             for (AsyncProfilerTask task : taskList) {
-                if (!taskId2Log.containsKey(task.getId())) {
-                    taskCache.saveTask(task.getServiceInstanceId(), task);
-                }
+                taskCache.saveTask(task.getServiceId(), task);
             }
 
         } catch (IOException e) {

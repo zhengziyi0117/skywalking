@@ -31,7 +31,7 @@ public class AsyncProfilerMutation implements GraphQLMutationResolver {
 
     public AsyncProfilerTaskCreationResult createAsyncProfilerTask(AsyncProfilerTaskCreationRequest request) throws IOException {
         AsyncProfilerMutationService asyncProfilerMutationService = getAsyncProfilerMutationService();
-        return asyncProfilerMutationService.createTask(request.getServiceId(), request.getServiceInstanceId(),
-                request.getDuration(), request.getDataFormat(), request.getEvents(), request.getExecArgs());
+        return asyncProfilerMutationService.createTask(request.getServiceId(), request.getServiceInstanceIds(),
+                request.getDuration(), request.getEvents(), request.getExecArgs());
     }
 }

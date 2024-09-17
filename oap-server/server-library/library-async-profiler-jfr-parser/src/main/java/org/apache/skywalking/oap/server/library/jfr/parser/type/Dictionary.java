@@ -21,7 +21,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr;
+package org.apache.skywalking.oap.server.library.jfr.parser.type;
 
 /**
  * Fast and compact long->Object map.

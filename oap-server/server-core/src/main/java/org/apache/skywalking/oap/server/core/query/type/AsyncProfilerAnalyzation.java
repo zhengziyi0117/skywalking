@@ -9,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 public class AsyncProfilerAnalyzation {
     private String errorReason;
-    private List<AsyncProfilerStackTree> trees;
+    private AsyncProfilerStackTree tree;
 }

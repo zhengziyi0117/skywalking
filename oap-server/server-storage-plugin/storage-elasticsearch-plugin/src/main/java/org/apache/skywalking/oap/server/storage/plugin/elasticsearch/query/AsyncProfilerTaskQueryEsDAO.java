@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.oap.server.storage.plugin.elasticsearch.query;
 
-import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerDataFormatType;
 import org.apache.skywalking.library.elasticsearch.requests.search.BoolQueryBuilder;
 import org.apache.skywalking.library.elasticsearch.requests.search.Query;
 import org.apache.skywalking.library.elasticsearch.requests.search.Search;
@@ -51,15 +50,15 @@ public class AsyncProfilerTaskQueryEsDAO extends EsDAO implements IAsyncProfiler
     }
 
     @Override
-    public List<AsyncProfilerTask> getTaskList(String serviceInstanceId, Long startTimeBucket, Long endTimeBucket, Integer limit) {
+    public List<AsyncProfilerTask> getTaskList(String serviceId, Long startTimeBucket, Long endTimeBucket, Integer limit) {
         String index = IndexController.LogicIndicesRegister.getPhysicalTableName(AsyncProfilerTaskRecord.INDEX_NAME);
         BoolQueryBuilder query = Query.bool();
         if (IndexController.LogicIndicesRegister.isMergedTable(AsyncProfilerTaskRecord.INDEX_NAME)) {
             query.must(Query.term(IndexController.LogicIndicesRegister.RECORD_TABLE_NAME, AsyncProfilerTaskRecord.INDEX_NAME));
         }
 
-        if (StringUtil.isNotEmpty(serviceInstanceId)) {
-            query.must(Query.term(AsyncProfilerTaskRecord.SERVICE_INSTANCE_ID, serviceInstanceId));
+        if (StringUtil.isNotEmpty(serviceId)) {
+            query.must(Query.term(AsyncProfilerTaskRecord.SERVICE_ID, serviceId));
         }
 
         if (startTimeBucket != null) {
@@ -107,17 +106,15 @@ public class AsyncProfilerTaskQueryEsDAO extends EsDAO implements IAsyncProfiler
         Map<String, Object> source = data.getSource();
         // This must be a list
         List<String> events = (List<String>) source.get(AsyncProfilerTaskRecord.EVENT_TYPES);
-        String dataFormat = (String) source.get(AsyncProfilerTaskRecord.DATA_FORMAT);
 
         return AsyncProfilerTask.builder()
                 .id((String) source.get(AsyncProfilerTaskRecord.TASK_ID))
                 .serviceId((String) source.get(AsyncProfilerTaskRecord.SERVICE_ID))
-                .serviceInstanceId((String) source.get(AsyncProfilerTaskRecord.SERVICE_INSTANCE_ID))
+                .serviceInstanceIds((List<String>) source.get(AsyncProfilerTaskRecord.SERVICE_INSTANCE_IDS))
                 .createTime(((Number) source.get(AsyncProfilerTaskRecord.CREATE_TIME)).longValue())
                 .duration(((Number) source.get(AsyncProfilerTaskRecord.DURATION)).intValue())
                 .execArgs((String) source.get(AsyncProfilerTaskRecord.EXEC_ARGS))
                 .events(AsyncProfilerEventType.valueOfList(events))
-                .dataFormat(AsyncProfilerDataFormatType.valueOf(dataFormat))
                 .build();
     }
 }

@@ -21,16 +21,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr;
+package org.apache.skywalking.oap.server.library.jfr.parser.type.event;
 
-public class MethodRef {
-    public final long cls;
-    public final long name;
-    public final long sig;
+public class ExecutionSample extends Event {
+    public final int threadState;
 
-    public MethodRef(long cls, long name, long sig) {
-        this.cls = cls;
-        this.name = name;
-        this.sig = sig;
+    public ExecutionSample(long time, int tid, int stackTraceId, int threadState) {
+        super(time, tid, stackTraceId);
+        this.threadState = threadState;
     }
 }

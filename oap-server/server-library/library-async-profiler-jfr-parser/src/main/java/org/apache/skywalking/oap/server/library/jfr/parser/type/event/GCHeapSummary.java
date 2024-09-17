@@ -21,12 +21,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr;
+package org.apache.skywalking.oap.server.library.jfr.parser.type.event;
 
-public class ClassRef {
-    public final long name;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.JfrReader;
 
-    public ClassRef(long name) {
-        this.name = name;
+public class GCHeapSummary extends Event {
+    public final int gcId;
+    public final boolean afterGC;
+    public final long committed;
+    public final long reserved;
+    public final long used;
+
+    public GCHeapSummary(JfrReader jfr) {
+        super(jfr.getVarlong(), 0, 0);
+        this.gcId = jfr.getVarint();
+        this.afterGC = jfr.getVarint() > 0;
+        long start = jfr.getVarlong();
+        long committedEnd = jfr.getVarlong();
+        this.committed = jfr.getVarlong();
+        long reservedEnd = jfr.getVarlong();
+        this.reserved = jfr.getVarlong();
+        this.used = jfr.getVarlong();
     }
 }

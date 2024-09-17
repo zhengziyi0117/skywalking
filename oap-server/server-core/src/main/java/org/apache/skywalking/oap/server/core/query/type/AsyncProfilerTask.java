@@ -23,7 +23,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerDataFormatType;
 
 import java.util.List;
 
@@ -35,10 +34,9 @@ import java.util.List;
 public class AsyncProfilerTask {
     private String id;
     private String serviceId;
-    private String serviceInstanceId;
+    private List<String> serviceInstanceIds;
     private long createTime;
     private List<AsyncProfilerEventType> events;
-    private AsyncProfilerDataFormatType dataFormat;
     private int duration;
     private String execArgs;
 }

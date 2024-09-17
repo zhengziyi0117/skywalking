@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.apm.network.common.v3.Commands;
 import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfileTaskCommandQuery;
 import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerData;
-import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerDataFormatType;
 import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerMetaData;
 import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerTaskGrpc;
 import org.apache.skywalking.oap.server.core.CoreModule;
@@ -37,13 +36,14 @@ import org.apache.skywalking.oap.server.core.command.CommandService;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.analyze.JfrAnalyzer;
 import org.apache.skywalking.oap.server.core.profiling.asyncprofiler.storage.AsyncProfilerTaskLogRecord;
 import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTask;
-import org.apache.skywalking.oap.server.core.query.type.AsyncProfilerTaskLogOperationType;
+import org.apache.skywalking.oap.server.core.query.type.ProfileTaskLogOperationType;
 import org.apache.skywalking.oap.server.core.source.JfrProfilingData;
 import org.apache.skywalking.oap.server.core.source.SourceReceiver;
 import org.apache.skywalking.oap.server.core.storage.StorageModule;
 import org.apache.skywalking.oap.server.core.storage.profiling.asyncprofiler.IAsyncProfilerTaskQueryDAO;
 import org.apache.skywalking.oap.server.library.module.ModuleManager;
 import org.apache.skywalking.oap.server.library.server.grpc.GRPCHandler;
+import org.apache.skywalking.oap.server.library.util.CollectionUtils;
 import org.apache.skywalking.oap.server.network.trace.component.command.AsyncProfilerTaskCommand;
 
 import java.io.IOException;
@@ -83,7 +83,7 @@ public class AsyncProfilerServiceHandler extends AsyncProfilerTaskGrpc.AsyncProf
             public void onNext(AsyncProfilerData asyncProfilerData) {
                 if (asyncProfilerData.hasMetaData()) {
                     taskMetaData = asyncProfilerData.getMetaData();
-                    tempFile = Path.of("/Users/bytedance/IdeaProjects/skywalking/", taskMetaData.getTaskId());
+                    tempFile = Path.of("/home/zhengziyi/IdeaProjects/skywalking", taskMetaData.getTaskId() + taskMetaData.getServiceInstance() + ".jfr");
                     outputStream = Files.newOutputStream(tempFile);
                 } else if (asyncProfilerData.hasContent()) {
                     outputStream.write(asyncProfilerData.getContent().toByteArray());
@@ -106,44 +106,43 @@ public class AsyncProfilerServiceHandler extends AsyncProfilerTaskGrpc.AsyncProf
                     return;
                 }
                 log.error("Error in receiving async profiler profiling data", throwable);
-
             }
 
             @Override
             @SneakyThrows
             public void onCompleted() {
+                responseObserver.onNext(Commands.newBuilder().build());
+                responseObserver.onCompleted();
                 // save data
                 try {
                     outputStream.flush();
                 } finally {
                     outputStream.close();
                 }
-                responseObserver.onNext(Commands.newBuilder().build());
-                responseObserver.onCompleted();
-                parseAndStorageData(taskMetaData.getTaskId(), tempFile.getFileName().toString());
+                parseAndStorageData(taskMetaData, tempFile.getFileName().toString());
+                Files.delete(tempFile);
             }
         };
     }
 
-    private void parseAndStorageData(String taskId, String fileName) throws IOException {
-        // TODO storage profiling file?
+    private void parseAndStorageData(AsyncProfilerMetaData taskMetaData, String fileName) throws IOException {
+        String taskId = taskMetaData.getTaskId();
+        String serviceId = IDManager.ServiceID.buildId(taskMetaData.getService(), true);
+        String serviceInstanceId = IDManager.ServiceInstanceID.buildId(serviceId, taskMetaData.getServiceInstance());
         AsyncProfilerTask task = taskDAO.getById(taskId);
         if (task == null) {
             log.error("AsyncProfiler taskId:{} not found but receive data", taskId);
             return;
         }
 
-        recordAsyncProfilerTaskLog(task, AsyncProfilerTaskLogOperationType.EXECUTION_FINISHED);
+        recordAsyncProfilerTaskLog(task, serviceInstanceId, ProfileTaskLogOperationType.EXECUTION_FINISHED);
 
-        if (AsyncProfilerDataFormatType.JFR.equals(task.getDataFormat())) {
-            List<JfrProfilingData> jfrProfilingData = jfrAnalyzer.parseJfr(taskId, fileName);
-            for (JfrProfilingData data : jfrProfilingData) {
-                sourceReceiver.receive(data);
-            }
-        } else if (AsyncProfilerDataFormatType.HTML.equals(task.getDataFormat())) {
-            // storage ?
-        } else {
-            log.error("unknown async profiler data format type:{}", task.getDataFormat());
+        List<JfrProfilingData> jfrProfilingData = jfrAnalyzer.parseJfr(fileName);
+        for (JfrProfilingData data : jfrProfilingData) {
+            data.setTaskId(taskId);
+            data.setInstanceId(serviceInstanceId);
+            data.setUploadTime(taskMetaData.getUploadTime());
+            sourceReceiver.receive(data);
         }
 
     }
@@ -154,9 +153,10 @@ public class AsyncProfilerServiceHandler extends AsyncProfilerTaskGrpc.AsyncProf
         String serviceInstanceId = IDManager.ServiceInstanceID.buildId(serviceId, request.getServiceInstance());
 
         // fetch tasks from cache
-        AsyncProfilerTask task = taskCache.getAsyncProfilerTask(serviceInstanceId);
+        AsyncProfilerTask task = taskCache.getAsyncProfilerTask(serviceId);
 //            List<AsyncProfilerTask> taskList = taskDAO.getTaskList(serviceInstanceId, latestUpdateTime, null, 1);
-        if (Objects.isNull(task) || task.getCreateTime() <= request.getLastCommandTime()) {
+        if (Objects.isNull(task) || task.getCreateTime() <= request.getLastCommandTime() ||
+                (!CollectionUtils.isEmpty(task.getServiceInstanceIds()) && !task.getServiceInstanceIds().contains(serviceInstanceId))) {
             responseObserver.onNext(Commands.newBuilder().build());
             responseObserver.onCompleted();
             return;
@@ -166,17 +166,17 @@ public class AsyncProfilerServiceHandler extends AsyncProfilerTaskGrpc.AsyncProf
         Commands commands = Commands.newBuilder().addCommands(asyncProfilerTaskCommand.serialize()).build();
         responseObserver.onNext(commands);
         responseObserver.onCompleted();
-        recordAsyncProfilerTaskLog(task, AsyncProfilerTaskLogOperationType.NOTIFIED);
+        recordAsyncProfilerTaskLog(task, serviceInstanceId, ProfileTaskLogOperationType.NOTIFIED);
         return;
     }
 
-    private void recordAsyncProfilerTaskLog(AsyncProfilerTask task, AsyncProfilerTaskLogOperationType operationType) {
+    private void recordAsyncProfilerTaskLog(AsyncProfilerTask task, String instanceId, ProfileTaskLogOperationType operationType) {
         AsyncProfilerTaskLogRecord logRecord = new AsyncProfilerTaskLogRecord();
         logRecord.setTaskId(task.getId());
-        logRecord.setInstanceId(task.getServiceInstanceId());
+        logRecord.setInstanceId(instanceId);
         logRecord.setOperationType(operationType.getCode());
         logRecord.setOperationTime(System.currentTimeMillis());
-        long timestamp = task.getCreateTime() + TimeUnit.MINUTES.toMillis(task.getDuration());
+        long timestamp = task.getCreateTime() + TimeUnit.SECONDS.toMillis(task.getDuration());
         logRecord.setTimeBucket(TimeBucket.getRecordTimeBucket(timestamp));
         RecordStreamProcessor.getInstance().in(logRecord);
     }

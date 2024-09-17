@@ -21,19 +21,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr.event;
+package org.apache.skywalking.oap.server.library.jfr.parser.type;
 
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.JfrReader;
+public class StackTrace {
+    public final long[] methods;
+    public final byte[] types;
+    public final int[] locations;
 
-public class CPULoad extends Event {
-    public final float jvmUser;
-    public final float jvmSystem;
-    public final float machineTotal;
-
-    public CPULoad(JfrReader jfr) {
-        super(jfr.getVarlong(), 0, 0);
-        this.jvmUser = jfr.getFloat();
-        this.jvmSystem = jfr.getFloat();
-        this.machineTotal = jfr.getFloat();
+    public StackTrace(long[] methods, byte[] types, int[] locations) {
+        this.methods = methods;
+        this.types = types;
+        this.locations = locations;
     }
 }

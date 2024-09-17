@@ -2,7 +2,7 @@ package org.apache.skywalking.oap.server.core.source;
 
 import lombok.Data;
 import org.apache.skywalking.oap.server.library.jfr.parser.convert.FrameTree;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType;
 
 import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.JFR_PROFILING_DATA;
 
@@ -20,12 +20,13 @@ public class JfrProfilingData extends Source {
     @Override
     public String getEntityId() {
         if (entityId == null) {
-            return taskId + uploadTime;
+            return taskId + instanceId + eventType.name() + uploadTime;
         }
         return entityId;
     }
 
     private String taskId;
+    private String instanceId;
     private long uploadTime;
     private JfrEventType eventType;
     private FrameTree frameTree;

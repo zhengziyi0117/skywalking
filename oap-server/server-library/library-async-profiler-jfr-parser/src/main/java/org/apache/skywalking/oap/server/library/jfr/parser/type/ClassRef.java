@@ -16,16 +16,17 @@
  *
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr.event;
+/*
+ * Copyright The async-profiler authors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package org.apache.skywalking.oap.server.library.jfr.parser.type;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class EventPair {
-    private JfrEventType type;
-    private Event event;
+public class ClassRef {
+    public final long name;
+
+    public ClassRef(long name) {
+        this.name = name;
+    }
 }

@@ -24,7 +24,7 @@ import org.apache.skywalking.oap.server.core.source.JfrProfilingData;
 import org.apache.skywalking.oap.server.library.jfr.parser.convert.Arguments;
 import org.apache.skywalking.oap.server.library.jfr.parser.convert.FrameTree;
 import org.apache.skywalking.oap.server.library.jfr.parser.convert.JfrParser;
-import org.apache.skywalking.oap.server.library.jfr.parser.jfr.event.JfrEventType;
+import org.apache.skywalking.oap.server.library.jfr.parser.type.event.JfrEventType;
 import org.apache.skywalking.oap.server.library.module.ModuleManager;
 
 import java.io.IOException;
@@ -39,19 +39,17 @@ public class JfrAnalyzer {
         this.moduleManager = moduleManager;
     }
 
-    public List<JfrProfilingData> parseJfr(String taskId, String jfrFileName) throws IOException {
+    public List<JfrProfilingData> parseJfr(String jfrFileName) throws IOException {
         List<JfrProfilingData> result = Lists.newArrayList();
-        long now = System.currentTimeMillis();
         Arguments arguments = new Arguments();
         // TODO config cpu state
+        arguments.lines = true;
         arguments.state = "default,runnable,sleeping";
         Map<JfrEventType, FrameTree> event2treeMap = JfrParser.dumpTree(jfrFileName, arguments);
         for (Map.Entry<JfrEventType, FrameTree> entry : event2treeMap.entrySet()) {
             JfrEventType event = entry.getKey();
             FrameTree tree = entry.getValue();
             JfrProfilingData data = new JfrProfilingData();
-            data.setTaskId(taskId);
-            data.setUploadTime(now);
             data.setEventType(event);
             data.setFrameTree(tree);
             result.add(data);

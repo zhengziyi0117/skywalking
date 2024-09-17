@@ -21,7 +21,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.skywalking.oap.server.library.jfr.parser.jfr.event;
+package org.apache.skywalking.oap.server.library.jfr.parser.type.event;
 
 public class EventAggregator {
     private static final int INITIAL_CAPACITY = 1024;

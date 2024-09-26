@@ -16,7 +16,6 @@ import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.base.Elasti
 import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.base.EsDAO;
 import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.base.IndexController;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class JfrDataQueryEsDAO extends EsDAO implements IJfrDataQueryDAO {
         }
         query.must(Query.term(JfrProfilingDataRecord.TASK_ID, taskId));
         query.must(Query.term(JfrProfilingDataRecord.EVENT_TYPE, eventType));
-        if(CollectionUtils.isNotEmpty(instanceIds)) {
+        if (CollectionUtils.isNotEmpty(instanceIds)) {
             query.must(Query.terms(JfrProfilingDataRecord.INSTANCE_ID, instanceIds));
         }
         final SearchBuilder search = Search.builder()

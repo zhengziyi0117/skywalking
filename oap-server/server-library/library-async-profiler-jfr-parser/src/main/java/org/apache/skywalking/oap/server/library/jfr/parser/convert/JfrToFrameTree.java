@@ -47,7 +47,7 @@ public class JfrToFrameTree extends JfrConverter {
         for (Map.Entry<JfrEventType, EventAggregator> entry : event2aggMap.entrySet()) {
             JfrEventType event = entry.getKey();
             EventAggregator agg = entry.getValue();
-            FrameTreeBuilder frameTreeBuilder = event2builderMap.computeIfAbsent(event, (eventType) -> new FrameTreeBuilder(args));
+            FrameTreeBuilder frameTreeBuilder = event2builderMap.computeIfAbsent(event, eventType -> new FrameTreeBuilder(args));
 
             agg.forEach(new EventAggregator.Visitor() {
                 final CallStack stack = new CallStack();

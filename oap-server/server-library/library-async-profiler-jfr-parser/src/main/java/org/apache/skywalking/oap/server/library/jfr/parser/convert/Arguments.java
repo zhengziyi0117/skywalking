@@ -23,23 +23,14 @@
 
 package org.apache.skywalking.oap.server.library.jfr.parser.convert;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 public class Arguments {
     public String title = "Flame Graph";
-    public String highlight;
     public String output;
     public String state;
     public Pattern include;
     public Pattern exclude;
-    public double minwidth;
     public int skip;
     public boolean reverse;
     public boolean cpu;

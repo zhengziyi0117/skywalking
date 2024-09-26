@@ -260,7 +260,7 @@ public class StorageModuleElasticsearchProvider extends ModuleProvider {
             IZipkinQueryDAO.class, new ZipkinQueryEsDAO(elasticSearchClient));
         this.registerServiceImplementation(
             ISpanAttachedEventQueryDAO.class, new SpanAttachedEventEsDAO(elasticSearchClient, config));
-        // TODO config
+        // TODO Currently, the TaskQueryMaxSize parameters still reuse the tracing profile parameters.
         this.registerServiceImplementation(
                 IAsyncProfilerTaskQueryDAO.class,
                 new AsyncProfilerTaskQueryEsDAO(elasticSearchClient, config.getProfileTaskQueryMaxSize())

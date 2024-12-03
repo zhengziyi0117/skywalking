@@ -1,4 +1,4 @@
-# Async Profiler
+# Java App Profiling
 
 Async Profiler is bound within the auto-instrument agent and corresponds to [In-Process Profiling](../../concepts-and-designs/profiling.md#in-process-profiling).
 
@@ -7,13 +7,23 @@ When service encounters performance issues (cpu usage, memory allocation, locks)
 When the proxy receives a task, it enables Async Profiler for sampling.
 After sampling is completed, a flame graph will be generated for performance analysis to determine the specific business code line that caused the performance problem.
 
-## Activate async profiler in the OAP
+## Activate Async Profiler in the OAP
 OAP and the agent use a brand-new protocol to exchange Async Profiler data, so it is necessary to start OAP with the following configuration:
 
 ```yaml
 receiver-async-profiler:
-  selector: ${SW_RECEIVER_ASYNC_PROFILER:default}
-  default:
+   selector: ${SW_RECEIVER_ASYNC_PROFILER:default}
+   default:
+      # Used to manage the maximum size of the jfr file that can be received, the unit is Byte, default is 30M
+      jfrMaxSize: ${SW_RECEIVER_ASYNC_PROFILER_JFR_MAX_SIZE:31457280}
+      # Used to determine whether to receive jfr in memory file or physical file mode
+      #
+      # The memory file mode have fewer local file system limitations, so they are by default. But it costs more memory.
+      #
+      # The physical file mode will use less memory when parsing and is more friendly to parsing large files.
+      # However, if the storage of the tmp directory in the container is insufficient, the oap server instance may crash.
+      # It is recommended to use physical file mode when volume mounting is used or the tmp directory has sufficient storage.
+      memoryParserEnabled: ${SW_RECEIVER_ASYNC_PROFILER_MEMORY_PARSER_ENABLED:true}
 ```
 
 ## Async Profiler Task with Analysis

@@ -1,11 +1,14 @@
 # Java App Profiling
 
+Java App Profiling uses the AsyncProfiler for sampling
+
 Async Profiler is bound within the auto-instrument agent and corresponds to [In-Process Profiling](../../concepts-and-designs/profiling.md#in-process-profiling).
 
-It is passed to the proxy in the form of a task, allowing it to be enabled or disabled dynamically.
+It is delivered to the agent in the form of a task, allowing it to be enabled or disabled dynamically.
 When service encounters performance issues (cpu usage, memory allocation, locks), async-profiler task can be created.
-When the proxy receives a task, it enables Async Profiler for sampling.
-After sampling is completed, a flame graph will be generated for performance analysis to determine the specific business code line that caused the performance problem.
+When the agent receives a task, it enables Async Profiler for sampling.
+After sampling is completed, the sampling results are analyzed by requesting the server to render a flame graph for performance 
+analysis to determine the specific business code lines that cause performance problems.
 
 ## Activate Async Profiler in the OAP
 OAP and the agent use a brand-new protocol to exchange Async Profiler data, so it is necessary to start OAP with the following configuration:
@@ -55,18 +58,18 @@ When the Agent receives a Async Profiler task from OAP, it automatically generat
 
 ### Wait the agent to collect data and upload
 
-At this point, async-profiler will trace the following kinds of events:   
+At this point, Async Profiler will trace the events you selected when you created the task:
 
-1. CPU cycles
-2. Hardware and Software performance counters like cache misses, branch misses, page faults, context switches etc.
-3. Allocations in Java Heap
-4. Contented lock attempts, including both Java object monitors and ReentrantLocks
+1. CPU,WALL,ITIMER,CTIMER: CPU cycles
+2. ALLOC: Allocations in Java Heap
+3. LOCK: Contented lock attempts, including both Java object monitors and ReentrantLocks
 
-Finally, java agent will upload the jfr file produced by async-profiler to the oap server for online performance analysis.
+Finally, the agent will upload the jfr file produced by Async Profiler to the oap server for online performance analysis.
 
 ### Query the profiling task progresses
 
-Wait for async-profiler to complete data collection and upload successfully，We can query the execution log of the async-profiler task and the successful and failed instances,which includes the following information:
+Wait for Async Profiler to complete data collection and upload successfully.
+We can query the execution log of the async-profiler task and the successful and failed instances,which includes the following information:
 
 1. **successInstanceIds**: SuccessInstanceIds gives instances that have executed the task successfully.
 2. **errorInstanceIds**: ErrorInstanceIds gives instances that failed to execute the task.
